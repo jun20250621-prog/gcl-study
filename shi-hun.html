@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>詩魂 學習中心</title>
+<style>
+:root{
+  --bg: #090c1a;
+  --panel: #111628;
+  --panel2: #161c32;
+  --line: #252c45;
+  --text: #e8ecf9;
+  --muted: #8b95b8;
+  --gold: #818cf8;
+  --gold2: #a5b4fc;
+  --accent: #22d3ee;
+  --danger: #fb7185;
+  --glow: 129,140,248;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px;
+  font-family:"PingFang TC","Microsoft JhengHei","Hiragino Sans GB",system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(900px 520px at 12% -6%, rgba(var(--glow),.14), transparent 62%),
+    radial-gradient(760px 520px at 92% 0%, rgba(var(--glow),.08), transparent 62%),
+    radial-gradient(700px 600px at 50% 110%, rgba(var(--glow),.05), transparent 60%);
+}
+.wrap{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 20px}
+
+/* ---------- HERO ---------- */
+.hero{padding:56px 0 34px;text-align:center}
+.eyebrow{
+  display:inline-block;font-size:12px;letter-spacing:.28em;color:var(--gold);
+  border:1px solid rgba(var(--glow),.35);border-radius:999px;padding:6px 16px 6px 20px;
+  margin-bottom:20px;background:rgba(var(--glow),.06);
+}
+.hero h1{
+  font-size:clamp(30px,5.4vw,52px);font-weight:800;letter-spacing:.04em;line-height:1.15;
+  background:linear-gradient(120deg,var(--text) 10%,var(--gold2) 48%,var(--muted) 96%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero .sub{margin-top:14px;color:var(--muted);font-size:15px;letter-spacing:.06em}
+.stats{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:32px}
+.stat{
+  min-width:118px;background:linear-gradient(180deg,var(--panel2),var(--panel));
+  border:1px solid var(--line);border-radius:14px;padding:14px 20px;
+}
+.stat b{display:block;font-size:24px;font-weight:800;color:var(--gold2);letter-spacing:.02em}
+.stat span{display:block;font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:.1em}
+.progress{max-width:520px;margin:26px auto 0;height:7px;background:var(--panel2);
+  border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.progress .bar{height:100%;width:0;border-radius:99px;
+  background:linear-gradient(90deg,var(--gold),var(--accent));transition:width .5s cubic-bezier(.22,1,.36,1)}
+.progress-txt{margin-top:10px;font-size:13px;color:var(--muted);letter-spacing:.06em}
+
+/* ---------- PATHS ---------- */
+.section-title{
+  display:flex;align-items:center;gap:12px;font-size:16px;font-weight:700;
+  letter-spacing:.1em;color:var(--text);margin:34px 0 16px;opacity:.92;
+}
+.section-title::after{content:"";flex:1;height:1px;
+  background:linear-gradient(90deg,var(--line),transparent)}
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.path{
+  text-align:left;cursor:pointer;background:linear-gradient(160deg,var(--panel2),var(--panel));
+  border:1px solid var(--line);border-radius:14px;padding:16px 18px;transition:.25s;color:var(--text);
+  font-family:inherit;
+}
+.path:hover{transform:translateY(-3px);border-color:rgba(var(--glow),.45);
+  box-shadow:0 12px 28px rgba(0,0,0,.45)}
+.path.active{border-color:var(--gold);background:linear-gradient(160deg,rgba(var(--glow),.13),var(--panel))}
+.path .p-name{font-size:15px;font-weight:700;letter-spacing:.04em}
+.path .p-desc{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.6}
+.path .p-count{font-size:11px;color:var(--gold);letter-spacing:.14em;margin-top:10px;display:block}
+
+/* ---------- TOOLBAR ---------- */
+.toolbar{
+  position:sticky;top:0;z-index:30;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);padding:14px 0;margin:38px 0 24px;
+}
+.toolbar-inner{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.search-box{position:relative;flex:1 1 260px;min-width:200px}
+.search-box input{
+  width:100%;background:var(--panel);border:1px solid var(--line);border-radius:11px;
+  color:var(--text);font-size:14px;padding:11px 14px 11px 38px;outline:none;transition:.2s;
+  font-family:inherit;
+}
+.search-box input:focus{border-color:rgba(var(--glow),.6);
+  box-shadow:0 0 0 3px rgba(var(--glow),.1)}
+.search-box input::placeholder{color:var(--muted);opacity:.6}
+.search-box .ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);
+  color:var(--muted);font-size:14px}
+select{
+  background:var(--panel);border:1px solid var(--line);border-radius:11px;color:var(--text);
+  padding:11px 12px;font-size:13px;outline:none;cursor:pointer;font-family:inherit;
+}
+select:focus{border-color:rgba(var(--glow),.6)}
+.btn-rand{
+  background:linear-gradient(135deg,rgba(var(--glow),.2),rgba(var(--glow),.06));
+  border:1px solid rgba(var(--glow),.45);color:var(--gold2);border-radius:11px;
+  padding:11px 16px;font-size:13px;cursor:pointer;transition:.2s;font-family:inherit;white-space:nowrap;
+}
+.btn-rand:hover{background:rgba(var(--glow),.28)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{
+  background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;
+  padding:6px 14px;font-size:13px;cursor:pointer;transition:.2s;font-family:inherit;
+}
+.chip:hover{border-color:rgba(var(--glow),.5);color:var(--gold2)}
+.chip.active{background:rgba(var(--glow),.15);border-color:var(--gold);
+  color:var(--gold2);font-weight:600}
+.chip small{opacity:.6;margin-left:5px;font-size:11px}
+
+/* ---------- GRID ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:18px}
+.card{
+  position:relative;background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;display:flex;flex-direction:column;
+  transition:transform .28s cubic-bezier(.22,1,.36,1),border-color .28s,box-shadow .28s,opacity .28s;
+}
+.card:hover{transform:translateY(-5px);border-color:rgba(var(--glow),.5);
+  box-shadow:0 16px 36px rgba(0,0,0,.55)}
+.card.dim{opacity:.18;filter:grayscale(.7)}
+.card.done{border-color:rgba(74,222,128,.4)}
+.card.done::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--accent);z-index:2}
+.thumb{position:relative;display:block;aspect-ratio:16/9;overflow:hidden;
+  background:linear-gradient(135deg,var(--panel3,#1d2534),var(--panel))}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.card:hover .thumb img{transform:scale(1.06)}
+.thumb::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.55));pointer-events:none}
+.play{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.85);
+  width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  background:var(--gold);color:#141414;font-size:15px;padding-left:3px;
+  opacity:0;transition:.28s;z-index:2;
+}
+.card:hover .play{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.views{
+  position:absolute;right:9px;bottom:9px;z-index:2;font-size:11.5px;color:#e6ebf5;
+  background:rgba(0,0,0,.66);border-radius:6px;padding:3px 8px;backdrop-filter:blur(4px);
+  font-variant-numeric:tabular-nums;letter-spacing:.02em;
+}
+.body{padding:14px 15px 15px;display:flex;flex-direction:column;gap:12px;flex:1}
+.body h3{
+  font-size:14.5px;font-weight:600;line-height:1.55;letter-spacing:.01em;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  min-height:45px;color:var(--text);
+}
+.meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto}
+.tag{font-size:11px;color:var(--gold);letter-spacing:.06em;background:rgba(var(--glow),.1);
+  border:1px solid rgba(var(--glow),.25);border-radius:6px;padding:3px 9px;white-space:nowrap}
+.actions{display:flex;align-items:center;gap:6px}
+.note-btn{
+  background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;
+  width:28px;height:24px;font-size:12px;cursor:pointer;transition:.2s;font-family:inherit;
+  display:grid;place-items:center;line-height:1;
+}
+.note-btn:hover{border-color:var(--gold);color:var(--gold2)}
+.note-btn.has-note{background:rgba(var(--glow),.14);border-color:rgba(var(--glow),.55);color:var(--gold2)}
+.done-btn{
+  background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;
+  padding:4px 11px;font-size:11.5px;cursor:pointer;transition:.2s;font-family:inherit;white-space:nowrap;
+}
+.done-btn:hover{border-color:var(--gold);color:var(--gold2)}
+.card.done .done-btn{background:rgba(74,222,128,.13);border-color:rgba(74,222,128,.5);
+  color:var(--accent);font-weight:600}
+.empty{text-align:center;padding:70px 20px;color:var(--muted);font-size:14px;
+  letter-spacing:.08em;grid-column:1/-1}
+.empty b{display:block;font-size:34px;margin-bottom:12px;opacity:.4}
+
+/* ---------- FAB ---------- */
+.fab{
+  position:fixed;right:26px;bottom:26px;z-index:60;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#141414;border:none;border-radius:999px;padding:14px 22px;
+  font-size:14px;font-weight:700;letter-spacing:.06em;cursor:pointer;
+  box-shadow:0 10px 30px rgba(var(--glow),.28);transition:.25s;font-family:inherit;
+  display:flex;align-items:center;gap:9px;
+}
+.fab:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(var(--glow),.42)}
+.fab .badge{background:#141414;color:var(--gold2);font-size:11px;font-weight:800;
+  border-radius:999px;padding:2px 8px;min-width:22px;text-align:center}
+
+/* ---------- OVERLAY + PANEL ---------- */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(4px);
+  opacity:0;pointer-events:none;transition:.32s;z-index:70}
+.overlay.open{opacity:1;pointer-events:auto}
+.panel{
+  position:fixed;top:0;right:0;bottom:0;width:min(460px,94vw);
+  background:linear-gradient(180deg,var(--panel2),var(--panel));
+  border-left:1px solid var(--line);z-index:80;
+  transform:translateX(102%);transition:transform .42s cubic-bezier(.22,1,.36,1);
+  display:flex;flex-direction:column;
+}
+.panel.open{transform:translateX(0)}
+.panel-head{padding:20px 20px 16px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;gap:12px}
+.panel-head h2{font-size:16px;font-weight:700;letter-spacing:.1em;color:var(--gold2)}
+.panel-head .close{background:transparent;border:1px solid var(--line);color:var(--muted);
+  width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;
+  display:grid;place-items:center;transition:.2s;font-family:inherit;line-height:1}
+.panel-head .close:hover{border-color:var(--gold);color:var(--gold2)}
+.rec-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  padding:16px 20px;border-bottom:1px solid var(--line)}
+.rec-stat{text-align:center;background:var(--panel);border:1px solid var(--line);
+  border-radius:10px;padding:10px 4px}
+.rec-stat b{display:block;font-size:19px;font-weight:800;color:var(--gold2);
+  font-variant-numeric:tabular-nums}
+.rec-stat span{display:block;font-size:10.5px;color:var(--muted);margin-top:3px;letter-spacing:.08em}
+.rec-tools{display:flex;gap:8px;padding:14px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.rec-tools button, .rec-tools label{
+  flex:1 1 auto;background:transparent;border:1px solid var(--line);color:var(--muted);
+  border-radius:9px;padding:8px 12px;font-size:12px;cursor:pointer;transition:.2s;
+  font-family:inherit;text-align:center;white-space:nowrap;
+}
+.rec-tools button:hover, .rec-tools label:hover{border-color:var(--gold);color:var(--gold2)}
+.rec-tools .danger:hover{border-color:var(--danger);color:var(--danger)}
+.rec-tools input[type=file]{display:none}
+.rec-body{flex:1;overflow-y:auto;padding:18px 20px 40px}
+.rec-body::-webkit-scrollbar{width:7px}
+.rec-body::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+.rec-group{margin-bottom:24px}
+.rec-date{display:flex;align-items:center;justify-content:space-between;
+  font-size:11.5px;letter-spacing:.14em;color:var(--gold);margin-bottom:10px;
+  padding-bottom:7px;border-bottom:1px dashed var(--line)}
+.rec-date span{color:var(--muted);letter-spacing:.04em}
+.rec-item{background:var(--panel);border:1px solid var(--line);border-radius:11px;
+  padding:12px 14px;margin-bottom:9px;transition:.2s}
+.rec-item:hover{border-color:rgba(var(--glow),.4)}
+.rec-item h5{font-size:13px;font-weight:600;line-height:1.55;margin-bottom:7px}
+.rec-note{font-size:12px;color:var(--muted);line-height:1.7;white-space:pre-wrap;
+  border-left:2px solid rgba(var(--glow),.45);padding-left:10px;margin:8px 0 4px}
+.rec-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:7px}
+.rec-time{font-size:11px;color:var(--muted);opacity:.7;font-variant-numeric:tabular-nums}
+.rec-foot a{font-size:11px;color:var(--muted);text-decoration:none;
+  border-bottom:1px dotted var(--line)}
+.rec-foot a:hover{color:var(--gold)}
+.rec-blank{text-align:center;color:var(--muted);font-size:13px;padding:60px 20px;line-height:2}
+.rec-blank b{display:block;font-size:32px;opacity:.35;margin-bottom:10px}
+
+/* ---------- MODAL ---------- */
+.modal{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(5px);
+  opacity:0;pointer-events:none;transition:.28s}
+.modal.open{opacity:1;pointer-events:auto}
+.modal-box{width:min(560px,100%);background:linear-gradient(180deg,var(--panel2),var(--panel));
+  border:1px solid var(--line);border-radius:16px;padding:22px;
+  box-shadow:0 30px 80px rgba(0,0,0,.7);
+  transform:translateY(14px) scale(.98);transition:.3s cubic-bezier(.22,1,.36,1)}
+.modal.open .modal-box{transform:translateY(0) scale(1)}
+.modal-box h4{font-size:14px;font-weight:600;line-height:1.6;color:var(--gold2);margin-bottom:14px}
+.modal-box textarea{width:100%;min-height:150px;resize:vertical;background:var(--bg);
+  border:1px solid var(--line);border-radius:11px;color:var(--text);font-size:13.5px;
+  line-height:1.8;padding:13px 15px;outline:none;font-family:inherit;transition:.2s}
+.modal-box textarea:focus{border-color:rgba(var(--glow),.6);
+  box-shadow:0 0 0 3px rgba(var(--glow),.09)}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+.modal-actions button{border-radius:10px;padding:9px 20px;font-size:13px;cursor:pointer;
+  transition:.2s;font-family:inherit;border:1px solid var(--line)}
+.modal-actions .cancel{background:transparent;color:var(--muted)}
+.modal-actions .cancel:hover{border-color:var(--muted);color:var(--text)}
+.modal-actions .save{background:linear-gradient(135deg,var(--gold),var(--gold2));
+  border-color:transparent;color:#141414;font-weight:700}
+.modal-actions .del{background:transparent;color:var(--danger);
+  border-color:rgba(248,113,113,.35);margin-right:auto}
+.modal-actions .del:hover{background:rgba(248,113,113,.1)}
+
+footer{margin-top:60px;text-align:center;color:var(--muted);font-size:12.5px;
+  line-height:2;letter-spacing:.06em;opacity:.75}
+
+@media(max-width:640px){
+  .hero{padding:38px 0 24px}
+  .stats{gap:10px}
+  .stat{min-width:calc(50% - 10px);padding:12px 14px;flex:1}
+  .stat b{font-size:20px}
+  .grid{grid-template-columns:1fr;gap:14px}
+  .toolbar{margin:26px 0 18px}
+  .fab{right:16px;bottom:16px;padding:12px 18px;font-size:13px}
+  .rec-stats{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">股票</span>
+    <h1>詩魂 學習中心</h1>
+    <p class="sub">技術分析</p>
+
+    <div class="stats">
+      <div class="stat"><b id="s-videos">0</b><span>精選影片</span></div>
+      <div class="stat"><b id="s-views">0</b><span>累計觀看</span></div>
+      <div class="stat"><b id="s-cats">0</b><span>主題分類</span></div>
+      <div class="stat"><b id="s-done">0</b><span>已學紀錄</span></div>
+    </div>
+
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <p class="progress-txt" id="ptxt">學習進度 0 / 0</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="section-title">推薦學習路徑</div>
+  <div class="paths" id="paths"></div>
+
+  <div class="toolbar">
+    <div class="toolbar-inner">
+      <div class="search-box">
+        <span class="ico">🔍</span>
+        <input id="search" type="search" placeholder="搜尋主題，如：命運 / 賺錢 / 領導力 / 焦慮  （按 / 快速聚焦）">
+      </div>
+      <select id="sort">
+        <option value="hot">觀看次數 ↓</option>
+        <option value="cold">觀看次數 ↑</option>
+        <option value="title">標題排序</option>
+        <option value="orig">原始順序</option>
+      </select>
+      <button class="btn-rand" id="rand">🎲 隨機一堂</button>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <footer>
+    資料來源：匯入檔案 · 共精選 54 筆<br>
+    點擊封面跳轉 YouTube 原影片 · 學習紀錄與筆記儲存在本機瀏覽器
+  </footer>
+
+</main>
+
+<button class="fab" id="fab">
+  📖 學習紀錄 <span class="badge" id="fabBadge">0</span>
+</button>
+
+<div class="overlay" id="overlay"></div>
+
+<aside class="panel" id="panel">
+  <div class="panel-head">
+    <h2>📖 學習紀錄</h2>
+    <button class="close" id="panelClose" title="關閉">✕</button>
+  </div>
+
+  <div class="rec-stats">
+    <div class="rec-stat"><b id="rs-today">0</b><span>今日學習</span></div>
+    <div class="rec-stat"><b id="rs-week">0</b><span>近 7 天</span></div>
+    <div class="rec-stat"><b id="rs-streak">0</b><span>連續天數</span></div>
+    <div class="rec-stat"><b id="rs-total">0</b><span>累計紀錄</span></div>
+  </div>
+
+  <div class="rec-tools">
+    <button id="btnExport">⬇ 匯出備份</button>
+    <label for="importFile">⬆ 匯入備份</label>
+    <input type="file" id="importFile" accept="application/json,.json">
+    <button class="danger" id="btnClear">清空全部</button>
+  </div>
+
+  <div class="rec-body" id="recBody"></div>
+</aside>
+
+<div class="modal" id="noteModal">
+  <div class="modal-box">
+    <h4 id="nmTitle"></h4>
+    <textarea id="nmText" placeholder="寫下你的心得、金句、行動清單…（留空則只儲存學習紀錄）"></textarea>
+    <div class="modal-actions">
+      <button class="del" id="nmDelete">刪除紀錄</button>
+      <button class="cancel" id="nmCancel">取消</button>
+      <button class="save" id="nmSave">儲存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= 資料（由產生器注入） ================= */
+const RAW = [["【重磅教學】別猶豫 看到這K線要趕快跑! | 輕鬆學會K線 | 2024 K線入門 | 技術分析基礎教學","H50f1tmIpAY",457326,"其他"],["MACD史上最強買飆股完整SOP教學 只要3步驟 5分鐘學會 | 詩魂全能版MACD 看星星看箭頭買賣賺7倍","FP9DVRbEoFg",85198,"其他"],["【附完整攻略】2023詩魂改良版 RSI | 買到飆股全靠它 |  教您買在飆股起漲點 賣在波段最高點 | 專用來順勢交易的RSI版本","u7VqLV86L5s",51774,"其他"],["【詩魂操盤課】MACD看方向、KD看跌夠！順勢拉回買點完整教學","iGY3HEfo7CY",12931,"其他"],["【詩魂操盤課】最強指標MACD操盤法：買賣點怎麼抓最準？方向、動能、進出場完整教學","f70KQ0qvLZ8",7603,"其他"],["【付費內容限時分享】2022 史上最強！布林指標買飆股SOP完整教學 看綠箭頭買 紅箭頭賣 賺1000% | 詩魂加強版bollinger band指標限時免費 |教您買到飆股起漲點 賣在波段最高點","pCaTI1uDvgo",2833,"其他"],["當價格回測到這個QM Zone卻不再下跌，還看不出端倪嗎？ #shorts #詩魂 #技術分析 #交易策略 #型態突破","qdHhfgdfY7Q",2755,"其他"],["【恆指5分線】用詩魂全能K線指標操作恆指5分線案例解說","oIa6Brtfh8U",2289,"其他"],["買對只是開始，真正賺錢的是後面怎麼抱 #shorts #詩魂 #技術分析 #交易策略 #型態突破","Ej0JYmOvNp4",2250,"財富商業"],["MACD發動失敗，通常會先跌破這裡 #shorts #macd #取箱確認 #交易SOP #技術分析","zFG5j4pUdzY",1397,"其他"],["如果訂單塊沒被破壞，你還需要等到QM Zone嗎？ #shorts #詩魂 #技術分析 #交易策略 #型態突破","Tnd8b1YHfA0",1382,"其他"],["這種K線判斷法，數到9就賣出，是對的？還是錯的？ #shorts # #技術分析 #價格行為 #九轉序列 #TD序列","AwCC3Xh2uqM",1374,"其他"],["MACD最大問題：訊號太慢，讓你一直追高 #shorts #macd #技術分析 #交易教學 #股票投資","9oG5c22BMd8",1348,"財富商業"],["8次交易？現在只做1次 #詩魂 #macd #kdj #技術分析 #交易策略","AyC7pBwg8uE",1338,"其他"],["漲上去了，還能追嗎？答案在這裡 #shorts #技術分析 #均線戰法 #支撐壓力 #市場結構","yD1CvFrS70Y",1238,"其他"],["用K線【九轉序列】時，遇到還沒到9就掉頭，那到底要不要賣？ #shorts #技術分析 #價格行為 #九轉序列 #TD序列","JGimlH70eCk",1198,"其他"],["散戶反而有一個主力做不到的優勢？ #shorts #技術分析 #主力操盤 #聰明錢 #ict","K-QxQsCm7ic",1190,"財富商業"],["什麼都不用看，只要數到 9，就能做交易？ #shorts # #技術分析 #價格行為 #九轉序列 #TD序列","lcsPyNrUMoQ",1101,"其他"],["你以為訂單塊很玄，其實只是少看懂這一段 #shorts #技術分析 #主力操盤 #聰明錢 #ict","nlTrjs2Rpec",1037,"財富商業"],["跌破均線，不一定代表轉弱，還要再看這個關鍵 #shorts #技術分析 #均線戰法 #支撐壓力 #市場結構","_QC_PpqrEFI",998,"其他"],["看到KD背離就進場？這是新手最危險的錯！ #shorts #kd #技術分析 #抄底 #交易教學","IpGj6jjDq90",988,"其他"],["你還需要憑感覺操作嗎？如果有工具課直接告訴你哪裡該盯 #shorts #技術分析 #主力操盤 #聰明錢 #ict","A45NS6OM5HI",902,"財富商業"],["調整「跌夠沒」？90%的人根本沒檢查這一步 #shorts #技術分析 #macd #kd #主升浪","CC8DKK-tZow",894,"其他"],["RSI止漲訊號出現，真的要馬上賣嗎？ #shorts #rsi #出場策略 #波段交易 #技術分析","ZzBR2RznzDE",891,"其他"],["為什麼畫完趨勢線，行情早就沖出去了？ #shorts #技術分析 #均線戰法 #支撐壓力 #市場結構","z_MJY2Okdzg",888,"財富商業"],["股價持續創新高，你可以放心追高？ #shorts #技術分析 #均線戰法 #支撐壓力 #市場結構","ULfJxZ505Rw",814,"人生哲思"],["2B法則，比1-2-3法則更早進場？ #shorts #技術分析 #價格行為 #2B法則 #抄底逃頂","IVrfh5iVJBM",809,"其他"],["指標不是越多越好，關鍵在怎麼搭配 #shorts #技術分析 #macd #kd #主升浪","ZgxhwT65cME",793,"其他"],["行情噴出前，圖上早就出現這個訊號 #shorts #技術分析 #均線戰法 #支撐壓力 #市場結構","8r2MUoHWQyw",729,"其他"],["以為沒背離就安全？但股價轉弱一定會出現背離嗎？ #shorts #技術分析 #均線戰法 #支撐壓力 #市場結構","HZmQ6Vf4Jjg",724,"其他"],["跌破均線後，原本的均線還能用嗎？答案可能跟你想的不一樣！ #shorts #技術分析 #均線戰法 #支撐壓力 #市場結構","9gwQZ_UhFZ8",704,"其他"],["只看背離還不夠，少了這一步很容易被套 #shorts #KD背離 #底背離 #技術分析 #交易勝率","nqFQLsJnzrA",703,"其他"],["不用猜，3個步驟判斷進場時機 #shorts #技術分析 #均線戰法 #支撐壓力 #市場結構","EplK7H-LGCA",525,"其他"],["傳統MACD這個缺點，會讓你錯過主升段 #shorts #macd #主升段 #波段交易 #技術分析","0pHw87jLysg",461,"其他"],["為什麼你總把第二波行情看成反彈？答案在這裡 #shorts #技術分析 #加密貨幣 #風險管理","iP0LGexsQnM",420,"職場領導力"],["它憑什麼這麼準？背後原理其實很簡單 #shorts #技術分析 #均線戰法 #支撐壓力 #市場結構","ICSVLykidAA",404,"其他"],["為什麼你每次抄底，都買在假反彈？#shorts #抄底 #假反彈 #技術分析 #交易策略","cxn-1eIbDFY",358,"其他"],["QML為什麼被稱為日內交易的超級戰法？ #shorts #技術分析 #交易策略 #型態突破","Vljb0VdQLzI",348,"其他"],["2B不是猜出來的，而是這樣一步步確認的 #shorts #技術分析 #價格行為 #2B法則 #抄底逃頂","WOvb7JEMLW4",326,"其他"],["真正穩定獲利的人，都會做這一步 #shorts #技術分析 #價格行為 #2B法則 #抄底逃頂","x1pC02OANpk",247,"其他"],["同樣是底背離，為什麼有人賺錢、有人被套？ #shorts #KD背離 #底背離 #技術分析 #交易策略","7voSkuw6ieM",242,"財富商業"],["股價為什麼總在這裡反彈？只是巧合嗎？ #shorts #技術分析 #均線戰法 #支撐壓力 #市場結構","vtx-3Wgvw3Y",225,"其他"],["只有價格突破，但強度與量能沒到位，這真的算起漲嗎？ #shorts #技術分析 #加密貨幣 #風險管理","SKG4Fo-nNW8",209,"職場領導力"],["你不是錯過行情，而是一直盯著已經漲完的股票 #shorts #技術分析 #macd #kd #主升浪","4UpaCOKnDXI",137,"其他"],["很多人學ICT卻賺不到，問題可能出在這裡 #shorts #技術分析 #主力操盤 #聰明錢 #ict","MCw61-wQ2hs",106,"財富商業"],["一根K線就漲完的行情，散戶到底怎麼玩？ #shorts #技術分析 #加密貨幣 #風險管理","WlWtvQlm4UY",78,"職場領導力"],["用K線【九轉序列】時，遇到還沒到9就掉頭，那到底要不要賣？ #shorts #shortvideo #技術分析 #價格行為 #九轉序列","Q9B-bq3XKTI",54,"其他"],["拉一條均線就能賺爆？但90%的人用錯了！ #shorts #技術分析 #均線戰法 #支撐壓力 #市場結構","kkIA5fW-7JY",52,"其他"],["為什麼這裡一定要做空？關鍵不是感覺，是結構 #shorts #shortvideo #技術分析 #加密貨幣 #比特幣","glZk4eH-LeU",46,"其他"],["主力拉升前，一定會先做這一件事（散戶全中招） #shorts #技術分析 #主力操盤 #聰明錢 #ict","Js0Zf0MiayE",44,"財富商業"],["為什麼高手說，市場其實有『節奏』？ #技術分析 #價格行為 #K線行為 #九轉序列 #TD序列","x4BeH6aapFE",40,"其他"],["行情沒走完，主力一定會先洗你一次（而且是故意的） #shorts #技術分析 #主力操盤 #聰明錢 #ict","vV5xQYLBNPI",28,"財富商業"],["買對只是開始，真正賺錢的是後面怎麼抱 #shorts #技術分析 #交易策略 #型態突破","puNjAvkpVcs",13,"財富商業"],["你以為看對行情就能賺？真正難的是這一關 #shorts #技術分析 #主力操盤 #smc #ict","XwF4c3-v4s0",12,"其他"]];
+const PATHS = [{"name":"🌱 入門 · 認識自己","desc":"先搞懂「人這一生應該怎麼活」，建立哲學視角","ids":["ULfJxZ505Rw"]},{"name":"💰 進階 · 商業底層邏輯","desc":"哲學思維如何變成賺錢的能力與財富認知","ids":["Ej0JYmOvNp4","9oG5c22BMd8","K-QxQsCm7ic","nlTrjs2Rpec","A45NS6OM5HI","z_MJY2Okdzg","7voSkuw6ieM","MCw61-wQ2hs"]},{"name":"👑 高階 · 領導力與時代","desc":"從領導力模型到看清時代趨勢與教育變革","ids":["z_MJY2Okdzg","iP0LGexsQnM","SKG4Fo-nNW8","WlWtvQlm4UY"]}];
+const STORAGE_KEY = "lp_詩魂學習中心_v2";
+
+/* ================= 去重建構 ================= */
+const seen = new Set();
+const VIDEOS = [];
+RAW.forEach((r, idx) => {
+  if (seen.has(r[1])) return;
+  seen.add(r[1]);
+  VIDEOS.push({ t: r[0], v: r[1], n: r[2], c: r[3], o: idx });
+});
+const V_MAP = Object.fromEntries(VIDEOS.map(v => [v.v, v]));
+const CATS = ["全部", ...Array.from(new Set(VIDEOS.map(v => v.c)))];
+
+/* ================= 紀錄儲存 ================= */
+let records = {};
+try {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) {
+    const p = JSON.parse(raw);
+    if (p && typeof p === "object" && !Array.isArray(p)) records = p;
+  }
+} catch (e) { records = {}; }
+
+function saveRecords() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); } catch (e) {}
+}
+
+/* ================= 工具 ================= */
+const $ = s => document.querySelector(s);
+const pad = n => String(n).padStart(2, "0");
+const dayKey = ts => { const d = new Date(ts); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); };
+const timeStr = ts => { const d = new Date(ts); return pad(d.getHours())+":"+pad(d.getMinutes()); };
+const fmtViews = n => n.toLocaleString("en-US");
+const fmtShort = n => n >= 10000 ? (n/10000).toFixed(1) + "萬" : n.toLocaleString("en-US");
+
+function friendlyDate(key) {
+  const today = dayKey(Date.now());
+  const y = new Date(); y.setDate(y.getDate() - 1);
+  const yesterday = dayKey(y.getTime());
+  if (key === today) return "今天";
+  if (key === yesterday) return "昨天";
+  const [Y, M, D] = key.split("-");
+  return Y + " 年 " + (+M) + " 月 " + (+D) + " 日";
+}
+
+function calcStreak() {
+  const days = new Set(Object.values(records).map(r => dayKey(r.at)));
+  if (!days.size) return 0;
+  const d = new Date();
+  if (!days.has(dayKey(d.getTime()))) {
+    d.setDate(d.getDate() - 1);
+    if (!days.has(dayKey(d.getTime()))) return 0;
+  }
+  let s = 0;
+  while (days.has(dayKey(d.getTime()))) { s++; d.setDate(d.getDate() - 1); }
+  return s;
+}
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+/* ================= 狀態 ================= */
+let curCat = "全部";
+let focusIds = null;
+const grid = $("#grid");
+
+/* ================= 頭部統計 ================= */
+function initStats() {
+  $("#s-videos").textContent = VIDEOS.length;
+  $("#s-views").textContent = fmtShort(VIDEOS.reduce((a, b) => a + b.n, 0));
+  $("#s-cats").textContent = CATS.length - 1;
+  updateProgress();
+}
+function updateProgress() {
+  const done = Object.keys(records).length;
+  const total = VIDEOS.length;
+  const pct = total ? (done / total) * 100 : 0;
+  $("#s-done").textContent = done;
+  $("#bar").style.width = pct.toFixed(1) + "%";
+  $("#ptxt").textContent = "學習進度 " + done + " / " + total + "（" + pct.toFixed(0) + "%）";
+  $("#fabBadge").textContent = done;
+}
+
+/* ================= 分類 Chips ================= */
+function initChips() {
+  const box = $("#chips");
+  box.innerHTML = CATS.map(c => {
+    const count = c === "全部" ? VIDEOS.length : VIDEOS.filter(v => v.c === c).length;
+    return '<button class="chip' + (c === curCat ? " active" : "") +
+           '" data-cat="' + escapeHTML(c) + '">' + escapeHTML(c) +
+           '<small>' + count + '</small></button>';
+  }).join("");
+  box.addEventListener("click", e => {
+    const b = e.target.closest(".chip");
+    if (!b) return;
+    curCat = b.dataset.cat;
+    focusIds = null;
+    document.querySelectorAll(".path").forEach(p => p.classList.remove("active"));
+    document.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c === b));
+    render();
+  });
+}
+
+/* ================= 學習路徑 ================= */
+function initPaths() {
+  const box = $("#paths");
+  if (!PATHS.length) { box.parentElement.style.display = "none"; return; }
+  box.innerHTML = PATHS.map((p, i) =>
+    '<button class="path" data-i="' + i + '">' +
+      '<div class="p-name">' + escapeHTML(p.name) + '</div>' +
+      '<div class="p-desc">' + escapeHTML(p.desc) + '</div>' +
+      '<span class="p-count">' + p.ids.length + ' 講 · 點擊聚焦</span>' +
+    '</button>').join("");
+
+  box.addEventListener("click", e => {
+    const b = e.target.closest(".path");
+    if (!b) return;
+    const p = PATHS[+b.dataset.i];
+    const same = focusIds && focusIds.join() === p.ids.join();
+    document.querySelectorAll(".path").forEach(x => x.classList.remove("active"));
+    if (same) {
+      focusIds = null;
+    } else {
+      focusIds = p.ids.slice();
+      b.classList.add("active");
+      curCat = "全部";
+      $("#search").value = "";
+      document.querySelectorAll(".chip").forEach(c =>
+        c.classList.toggle("active", c.dataset.cat === "全部"));
+    }
+    render();
+    document.querySelector(".toolbar").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+/* ================= 渲染網格 ================= */
+function render() {
+  const q = $("#search").value.trim().toLowerCase();
+  const sort = $("#sort").value;
+
+  let list = VIDEOS.filter(v => {
+    const okCat = curCat === "全部" || v.c === curCat;
+    const okQ = !q || v.t.toLowerCase().includes(q) || v.c.includes(q);
+    return okCat && okQ;
+  });
+
+  if (sort === "hot") list = list.slice().sort((a, b) => b.n - a.n);
+  else if (sort === "cold") list = list.slice().sort((a, b) => a.n - b.n);
+  else if (sort === "title") list = list.slice().sort((a, b) => a.t.localeCompare(b.t, "zh-Hant"));
+  else list = list.slice().sort((a, b) => a.o - b.o);
+
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty"><b>🔍</b>沒有找到符合的內容，換個關鍵字試試</div>';
+    return;
+  }
+
+  grid.innerHTML = list.map(v => {
+    const rec = records[v.v];
+    const done = !!rec;
+    const hasNote = rec && rec.note && rec.note.trim();
+    const url = "https://www.youtube.com/watch?v=" + v.v;
+    const dim = focusIds && !focusIds.includes(v.v);
+    return '<article class="card' + (done ? " done" : "") + (dim ? " dim" : "") +
+           '" data-id="' + v.v + '">' +
+      '<a class="thumb" href="' + url + '" target="_blank" rel="noopener noreferrer" title="在 YouTube 開啟">' +
+        '<img src="https://i.ytimg.com/vi/' + v.v + '/mqdefault.jpg" alt="" loading="lazy" ' +
+             'onerror="this.style.display=\'none\'">' +
+        '<span class="play">▶</span>' +
+        '<span class="views">' + fmtViews(v.n) + ' 次觀看</span>' +
+      '</a>' +
+      '<div class="body">' +
+        '<h3>' + escapeHTML(v.t) + '</h3>' +
+        '<div class="meta">' +
+          '<span class="tag">' + escapeHTML(v.c) + '</span>' +
+          '<div class="actions">' +
+            '<button class="note-btn' + (hasNote ? " has-note" : "") +
+              '" data-act="note" title="' + (hasNote ? "檢視 / 編輯筆記" : "寫筆記（同時標記已學）") + '">✎</button>' +
+            '<button class="done-btn" data-act="toggle">' +
+              (done ? "✓ 已學" : "標記已學") + '</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</article>';
+  }).join("");
+}
+
+/* ================= 網格互動 ================= */
+grid.addEventListener("click", e => {
+  const noteBtn = e.target.closest('[data-act="note"]');
+  if (noteBtn) {
+    e.preventDefault();
+    openNote(noteBtn.closest(".card").dataset.id);
+    return;
+  }
+  const btn = e.target.closest('[data-act="toggle"]');
+  if (!btn) return;
+  e.preventDefault();
+  const card = btn.closest(".card");
+  const id = card.dataset.id;
+
+  if (records[id]) {
+    if (!confirm("取消標記會同時刪除這筆學習紀錄和筆記，確定嗎？")) return;
+    delete records[id];
+  } else {
+    records[id] = { at: Date.now(), note: "" };
+  }
+  saveRecords();
+
+  const done = !!records[id];
+  card.classList.toggle("done", done);
+  btn.textContent = done ? "✓ 已學" : "標記已學";
+  const nb = card.querySelector(".note-btn");
+  const noteTxt = records[id] && records[id].note && records[id].note.trim();
+  nb.classList.toggle("has-note", !!noteTxt);
+
+  updateProgress();
+  renderPanel();
+});
+
+$("#search").addEventListener("input", render);
+$("#sort").addEventListener("change", render);
+
+$("#rand").addEventListener("click", () => {
+  const cards = [...document.querySelectorAll(".card")];
+  if (!cards.length) return;
+  const c = cards[Math.floor(Math.random() * cards.length)];
+  c.scrollIntoView({ behavior: "smooth", block: "center" });
+  c.style.transition = "none";
+  c.style.boxShadow = "0 0 0 3px rgba(224,176,77,.9)";
+  setTimeout(() => { c.style.transition = ""; c.style.boxShadow = ""; }, 900);
+});
+
+document.addEventListener("keydown", e => {
+  if (e.key === "/" && document.activeElement !== $("#search") &&
+      !$("#noteModal").classList.contains("open")) {
+    e.preventDefault();
+    $("#search").focus();
+    $("#search").select();
+  }
+  if (e.key === "Escape") {
+    if ($("#noteModal").classList.contains("open")) closeNote();
+    else if ($("#panel").classList.contains("open")) closePanel();
+    else if (document.activeElement === $("#search")) {
+      $("#search").value = ""; render(); $("#search").blur();
+    }
+  }
+});
+
+/* ================= 面板 ================= */
+function openPanel() {
+  renderPanel();
+  $("#panel").classList.add("open");
+  $("#overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+function closePanel() {
+  $("#panel").classList.remove("open");
+  $("#overlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+$("#fab").addEventListener("click", openPanel);
+$("#panelClose").addEventListener("click", closePanel);
+$("#overlay").addEventListener("click", closePanel);
+
+/* ================= 渲染紀錄面板 ================= */
+function renderPanel() {
+  const ids = Object.keys(records);
+  const todayK = dayKey(Date.now());
+  const todayCount = ids.filter(id => dayKey(records[id].at) === todayK).length;
+  const weekCount = ids.filter(id => Date.now() - records[id].at < 7 * 864e5).length;
+
+  $("#rs-today").textContent = todayCount;
+  $("#rs-week").textContent = weekCount;
+  $("#rs-streak").textContent = calcStreak();
+  $("#rs-total").textContent = ids.length;
+
+  const body = $("#recBody");
+
+  if (!ids.length) {
+    body.innerHTML = '<div class="rec-blank"><b>📭</b>還沒有學習紀錄<br>' +
+      '點擊任意影片卡片的「標記已學」<br>或點 ✎ 寫下你的第一則筆記</div>';
+    return;
+  }
+
+  const groups = {};
+  ids.forEach(id => {
+    const k = dayKey(records[id].at);
+    (groups[k] = groups[k] || []).push(id);
+  });
+
+  const keys = Object.keys(groups).sort((a, b) => b.localeCompare(a));
+
+  body.innerHTML = keys.map(k => {
+    const list = groups[k].sort((a, b) => records[b].at - records[a].at);
+    return '<div class="rec-group">' +
+      '<div class="rec-date">' + friendlyDate(k) + '<span>' + list.length + ' 筆</span></div>' +
+      list.map(id => {
+        const v = V_MAP[id];
+        const r = records[id];
+        const title = v ? v.t : id;
+        const url = "https://www.youtube.com/watch?v=" + id;
+        return '<div class="rec-item">' +
+          '<h5>' + escapeHTML(title) + '</h5>' +
+          (r.note && r.note.trim() ?
+            '<div class="rec-note">' + escapeHTML(r.note.trim()) + '</div>' : '') +
+          '<div class="rec-foot">' +
+            '<span class="rec-time">🕐 ' + timeStr(r.at) + '</span>' +
+            '<a href="' + url + '" target="_blank" rel="noopener noreferrer">去複習 ↗</a>' +
+          '</div>' +
+        '</div>';
+      }).join("") +
+    '</div>';
+  }).join("");
+}
+
+/* ================= 筆記彈窗 ================= */
+let noteEditing = null;
+
+function openNote(id) {
+  noteEditing = id;
+  const v = V_MAP[id];
+  const r = records[id];
+  $("#nmTitle").textContent = v ? v.t : id;
+  $("#nmText").value = r && r.note ? r.note : "";
+  $("#nmDelete").style.display = r ? "" : "none";
+  $("#noteModal").classList.add("open");
+  document.body.style.overflow = "hidden";
+  setTimeout(() => $("#nmText").focus(), 140);
+}
+function closeNote() {
+  $("#noteModal").classList.remove("open");
+  noteEditing = null;
+  if (!$("#panel").classList.contains("open")) document.body.style.overflow = "";
+}
+$("#nmCancel").addEventListener("click", closeNote);
+$("#noteModal").addEventListener("click", e => {
+  if (e.target === $("#noteModal")) closeNote();
+});
+
+$("#nmSave").addEventListener("click", () => {
+  if (!noteEditing) return;
+  const txt = $("#nmText").value.trim();
+  if (!records[noteEditing]) records[noteEditing] = { at: Date.now(), note: "" };
+  records[noteEditing].note = txt;
+  saveRecords();
+  closeNote();
+  render();
+  renderPanel();
+  updateProgress();
+});
+
+$("#nmDelete").addEventListener("click", () => {
+  if (!noteEditing) return;
+  if (!confirm("確定刪除這筆學習紀錄和筆記嗎？")) return;
+  delete records[noteEditing];
+  saveRecords();
+  closeNote();
+  render();
+  renderPanel();
+  updateProgress();
+});
+
+/* ================= 匯出 / 匯入 / 清空 ================= */
+$("#btnExport").addEventListener("click", () => {
+  if (!Object.keys(records).length) { alert("還沒有學習紀錄可以匯出"); return; }
+  const data = {
+    version: 2,
+    exportedAt: new Date().toISOString(),
+    records: records
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "學習紀錄_" + dayKey(Date.now()) + ".json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+});
+
+$("#importFile").addEventListener("change", e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    try {
+      const d = JSON.parse(rd.result);
+      const r = (d && d.records) ? d.records : d;
+      if (!r || typeof r !== "object" || Array.isArray(r)) throw new Error("bad");
+      let added = 0;
+      Object.keys(r).forEach(id => {
+        if (!V_MAP[id]) return;
+        const item = r[id];
+        if (!item || typeof item.at !== "number") return;
+        records[id] = { at: item.at, note: String(item.note || "") };
+        added++;
+      });
+      saveRecords();
+      render(); renderPanel(); updateProgress();
+      alert("匯入成功，共還原 " + added + " 筆紀錄");
+    } catch (err) {
+      alert("檔案格式不正確，請選擇本頁面匯出的 JSON 備份檔");
+    }
+  };
+  rd.readAsText(f);
+  e.target.value = "";
+});
+
+$("#btnClear").addEventListener("click", () => {
+  const n = Object.keys(records).length;
+  if (!n) { alert("目前沒有紀錄"); return; }
+  if (!confirm("確定清空全部 " + n + " 筆學習紀錄和筆記嗎？此操作無法復原。\n建議先「匯出備份」。")) return;
+  records = {};
+  saveRecords();
+  render(); renderPanel(); updateProgress();
+});
+
+/* ================= 啟動 ================= */
+initStats();
+initChips();
+initPaths();
+render();
+renderPanel();
+</script>
+</body>
+</html>
