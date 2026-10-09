@@ -8,91 +8,37 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); min-height: 100vh; color: #fff; line-height: 1.6; }
         .container { max-width: 900px; margin: 0 auto; padding: 20px; }
-        header { text-align: center; padding: 30px 20px; background: rgba(255,255,255,0.05); border-radius: 20px; margin-bottom: 30px; backdrop-filter: blur(10px); }
-        h1 { font-size: 2em; margin-bottom: 10px; background: linear-gradient(90deg, #ff6b6b, #feca57); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        header { text-align: center; padding: 30px 20px; background: rgba(255,255,255,0.05); border-radius: 20px; margin-bottom: 30px; }
+        h1 { font-size: 2em; margin-bottom: 10px; color: #feca57; }
         .subtitle { font-size: 1em; color: #aaa; margin-bottom: 15px; }
         .stats { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-top: 15px; }
         .stat-item { text-align: center; }
-        .stat-number { font-size: 1.5em; font-weight: bold; color: #ff6b6b; }
+        .stat-number { font-size: 1.5em; font-weight: bold; color: #feca57; }
         .stat-label { font-size: 0.8em; color: #888; }
         .progress-section { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; margin-bottom: 30px; }
         .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.9em; }
         .progress-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #ff6b6b, #feca57); border-radius: 4px; transition: width 0.3s ease; }
-        
-        .video-item { 
-            background: rgba(255,255,255,0.08); 
-            border-radius: 12px; 
-            padding: 15px; 
-            margin-bottom: 12px; 
-            cursor: pointer; 
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
+        .progress-fill { height: 100%; background: #feca57; border-radius: 4px; transition: width 0.3s ease; }
+        .video-item { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; margin-bottom: 12px; cursor: pointer; border: 2px solid transparent; transition: all 0.3s ease; }
         .video-item:hover { background: rgba(255,255,255,0.12); }
         .video-item.completed { border-color: #feca57; background: rgba(254,202,87,0.1); }
-        
         .video-header { display: flex; align-items: center; gap: 12px; }
-        .video-number { 
-            width: 32px; height: 32px; 
-            background: rgba(255,255,255,0.15); 
-            border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
-            font-weight: bold; font-size: 0.9em;
-            flex-shrink: 0; 
-        }
+        .video-number { width: 32px; height: 32px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9em; }
         .video-item.completed .video-number { background: #feca57; color: #1a1a2e; }
-        
         .video-title { flex: 1; font-size: 0.95em; }
-        
-        .video-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
-        
-        .video-link { 
-            color: #ff6b6b; text-decoration: none; 
-            padding: 6px 12px; background: rgba(255,255,255,0.1); 
-            border-radius: 15px; font-size: 0.8em; 
-        }
-        
-        .notes-btn { 
-            background: rgba(255,200,0,0.2); border: 1px solid #ffc800; 
-            color: #ffc800; padding: 6px 12px; 
-            border-radius: 15px; cursor: pointer; font-size: 0.8em; 
-        }
-        
-        .check-btn { 
-            width: 26px; height: 26px; 
-            border: 2px solid #555; border-radius: 50%; 
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-        }
+        .video-actions { display: flex; gap: 8px; align-items: center; }
+        .video-link { color: #feca57; text-decoration: none; padding: 6px 12px; background: rgba(254,202,87,0.2); border-radius: 15px; font-size: 0.8em; }
+        .notes-btn { background: rgba(255,200,0,0.2); border: 1px solid #ffc800; color: #ffc800; padding: 6px 12px; border-radius: 15px; cursor: pointer; font-size: 0.8em; }
+        .check-btn { width: 26px; height: 26px; border: 2px solid #555; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .video-item.completed .check-btn { background: #feca57; border-color: #feca57; }
         .video-item.completed .check-btn::after { content: "✓"; color: #1a1a2e; font-weight: bold; font-size: 0.8em; }
-        
-        .notes-panel { 
-            display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); 
-        }
+        .notes-panel { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); }
         .notes-panel.show { display: block; }
-        .notes-panel textarea { 
-            width: 100%; height: 120px; 
-            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); 
-            border-radius: 8px; padding: 10px; color: #fff; font-size: 0.9em; 
-            resize: vertical; font-family: inherit;
-        }
-        .notes-panel .save-btn { 
-            background: linear-gradient(90deg, #ff6b6b, #feca57); 
-            border: none; padding: 8px 16px; border-radius: 8px; 
-            color: #1a1a2e; font-weight: bold; cursor: pointer; margin-top: 8px; 
-        }
-        
+        .notes-panel textarea { width: 100%; height: 100px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; color: #fff; font-size: 0.9em; resize: vertical; }
+        .notes-panel .save-btn { background: #feca57; border: none; padding: 8px 16px; border-radius: 8px; color: #1a1a2e; font-weight: bold; cursor: pointer; margin-top: 8px; }
         footer { text-align: center; padding: 20px; color: #666; font-size: 0.9em; }
         .reset-btn { background: rgba(255,100,100,0.2); border: 1px solid #ff6464; color: #ff6464; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9em; }
         .export-btn { background: rgba(0,150,255,0.2); border: 1px solid #0096ff; color: #0096ff; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9em; margin-left: 10px; }
-        
-        @media (max-width: 600px) { 
-            h1 { font-size: 1.5em; } 
-            .stats { gap: 15px; } 
-            .video-header { flex-wrap: wrap; }
-            .video-actions { margin-top: 10px; width: 100%; justify-content: flex-end; }
-        }
     </style>
 </head>
 <body>
@@ -107,129 +53,166 @@
                 <div class="stat-item"><div class="stat-number" id="notesCount">0</div><div class="stat-label">筆記數</div></div>
             </div>
         </header>
-        
         <div class="progress-section">
             <div class="progress-header"><span>學習進度</span><span id="progressText">0 / 45</span></div>
             <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%"></div></div>
         </div>
-        
         <div id="videoList"></div>
-        
         <footer>
             <p>點擊圓圈標記完成 | 點擊筆記按鈕寫筆記</p>
             <button class="reset-btn" onclick="resetProgress()">重置進度</button>
             <button class="export-btn" onclick="exportNotes()">📤 匯出筆記</button>
         </footer>
     </div>
-
     <script>
-        const videos = [{"id": "7rtKMBjAS6M", "title": "哲学入门：看不懂时代？告别迷茫焦虑 || 001-01第一部分：日常哲思-1. 时代的纷扰", "chapter": ""}, {"id": "d_zRI9C58TQ", "title": "社会撕扯感：我们为何总在规则中左右为难？ || 001-02第一部分：日常哲思-2. 社会的撕扯", "chapter": ""}, {"id": "lYaZYnsIF9k", "title": "焦虑根源：无效思考 vs 有效行动 || 001-03第一部分：日常哲思-3. 生活的焦虑", "chapter": ""}, {"id": "SUEz1hEMa4U", "title": "哲学课：如何透过现象看本质？世界观入门 || 002-01第二部分：世界洞见-1. 从唯物主义角度你会看到什么？", "chapter": ""}, {"id": "IlslaeWhWRY", "title": "康德哲学：想象力的三个层次与无限思考 || 002-02第二部分：世界洞见-2.从唯心主义角度你会想出什么？", "chapter": ""}, {"id": "lDmBQWE9E4c", "title": "数字主义：现实与理想如何相互转化？ || 002-03第二部分：世界洞见-3.从数字主义角度你会遭遇什么", "chapter": ""}, {"id": "ABjAQ7C4zoo", "title": "哲学入门：思想的力量有多大？从拿破仑到尼采 || 003-01第三部分：思想力量-1.人与自然的关系", "chapter": ""}, {"id": "8zBllXi2kqc", "title": "人际关系本质：深度解析利权情理法五大类型 || 003-02第三部分：思想力量-2.人与人的关系", "chapter": ""}, {"id": "uvgII557itA", "title": "肉体与灵魂：探索有限与无限的哲学奥秘 || 003-03第三部分：思想力量-3肉体与灵魂的关系", "chapter": ""}, {"id": "5_CT2EWmAVw", "title": "哲学启智：普通人为什么要学哲学？ || 004-01第四部分：哲学启智-1.哲学是什么？", "chapter": ""}, {"id": "Y4o8kJ8smn8", "title": "哲学入门：快速了解形而上学、认识论与价值论 || 004-02第四部分：哲学启智-2.哲学由哪几部分组成", "chapter": ""}, {"id": "Fuen1_JmSZI", "title": "康德哲学革命：认识论如何颠覆世界观？ || 004-03第四部分：哲学启智-3.哲学是怎样变化的", "chapter": ""}, {"id": "ml2K8sn5R4M", "title": "哲学的功能：改变你的思想和观念 || 004-04第四部分：哲学启智-4.哲学的功能和目的", "chapter": ""}, {"id": "T35KotVdZx8", "title": "思维模式：学者、商人、政治家的根本差别在哪？ || 005-01第五部分：思维模式-1.感性思维", "chapter": ""}, {"id": "wsyquc9lvls", "title": "因果思维：从休谟、康德到禅宗野狐禅公案 || 005-02第五部分：思维模式-2.因果思维", "chapter": ""}, {"id": "VtbyP0c3srY", "title": "辩证思维：哲学核心，从古希腊聊到黑格尔 || 005-03第五部分：思维模式-3.辩证思维", "chapter": ""}, {"id": "7wf-vxSDKhs", "title": "系统思维深度解析：把握存在的价值 || 005-04第五部分：思维模式-4.系统思维", "chapter": ""}, {"id": "2Jc1aLI4tjA", "title": "思维的利器：哲学课带你提升思考力 || 006-01第六部分：思维利器-1语言工具", "chapter": ""}, {"id": "etKnVw6pNGw", "title": "文字如何塑造思维？象形vs拼音的秘密 || 006-02第六部分：思维利器-2.文字工具", "chapter": ""}, {"id": "jIeh042B4i0", "title": "数学是什么？理解世界本质的"形式工具" || 006-03第六部分：思维利器-3.数学工具", "chapter": ""}, {"id": "XyPmOE7iDuc", "title": "康德哲学：艺术是情感的工具，美是自由的快感 || 006-04第六部分：思维利器-4. 艺术工具", "chapter": ""}, {"id": "cXujkaPaPe8", "title": "郭春林哲学：深度思考，从理解"概念"开始 || 007-01第七部分：思懒致庸-1.概念的九个层次", "chapter": ""}, {"id": "nZDI_VzSEeg", "title": "AI时代，你真的会提问吗？提升问题意识告别焦虑 || 007-02第七部分：思懒致庸-2.问题意识的五个构件", "chapter": ""}, {"id": "_8nxMNuaLVU", "title": "深度思考的6个循环：从控制情感到定义问题 || 007-03第七部分：思懒致庸-3.深度思考的六个循环", "chapter": ""}, {"id": "GQymJtplCdk", "title": "人性的真相：康德与黑格尔的哲学解读 || 008-01第八部分：人性真相-1.人的生物性", "chapter": ""}, {"id": "Io6Hlaout08", "title": "人性真相：善恶分类与社会性管理学应用 || 008-02第八部分：人性真相-2.人的社会性", "chapter": ""}, {"id": "CTuV4EAQpCE", "title": "经济学入门：理解"人的经济性"是第一步 || 008-03第八部分：人性真相-3.人的经济性", "chapter": ""}, {"id": "lFuxG_fdHyw", "title": "知人识面难知心？掌握识人八宫法 || 009-01第九部分：识人智慧-1个体人性的八宫结构", "chapter": ""}, {"id": "j8V1MY61GyA", "title": "刘劭《人物志》九征判断法：古人识人智慧 || 009-02第九部分：识人智慧-2中国文化的九征判断", "chapter": ""}, {"id": "gMu7o_7lXFk", "title": "赵瑞《长短经》：孔子五仪识人术，你是哪种人？ || 009-03第九部分：识人智慧-3.赵蕤的五仪解释.1", "chapter": ""}, {"id": "ki3kXUU5ynU", "title": "郭春林：人生真谛与向死而生 || 010-01第十部分：人生真谛-1.克尔凯郭尔的人生三个阶段划分", "chapter": ""}, {"id": "UmBl9LJXS84", "title": "孔子人生六阶段(一)：15岁"志于学"学什么？ || 010-02第十部分：人生真谛-2.孔子的人生六个阶段划分", "chapter": ""}, {"id": "y473dywbnj4", "title": "人生观大比拼：一世、二世、三世学说哪个是你的信仰？ || 010-03第十部分：人生真谛-3.人生的学说", "chapter": ""}, {"id": "KTl3PC8J-qw", "title": "中西文化大不同？郭志林谈文化融合与性格 || 011-01第十一部分：文化融合-1.人与文化", "chapter": ""}, {"id": "onta0SS9PZw", "title": "宗教如何帮你超越生死？获得内心平静 || 011-02第十一部分：文化融合-2.人与宗教", "chapter": ""}, {"id": "9AX0KzcESKQ", "title": "郭志林哲学：文化融合与中西方文化性格差异 || 011-03第十一部分：文化融合-3.人与艺术", "chapter": ""}, {"id": "BZnI7aoKbMU", "title": "生活哲学：成功的三角形与人生智慧 || 012-01第十二部分：生活哲学-1.成功的三角形", "chapter": ""}, {"id": "k_OEkwUR0aA", "title": "人生五种活法深度解析：你选哪一种？ || 012-02第十二部分：生活哲学-2.", "chapter": ""}, {"id": "3VpCoJ25VhY", "title": "人生必知的7大生活法则 || 012-03第十二部分：生活哲学-3. 生活应该服从哪些准则", "chapter": ""}, {"id": "_GMD-pOf97M", "title": "郭春林哲学：精英的引领与生命5大向度 || 013-01第十三部分：精英引领-1.", "chapter": ""}, {"id": "lt8AyowhKCI", "title": "你是精英吗？揭秘精英必备的4大特质 || 013-02第十三部分：精英引领-2.精英的四个基本特征", "chapter": ""}, {"id": "M7Djyosjk8Q", "title": "精英思维揭秘：你与成功人士的差距在哪？ || 013-03第十三部分：精英引领-3.精英的八个心智特征", "chapter": ""}, {"id": "-XPLkYBrHXI", "title": "哲学智慧：终极探究与心的力量，何为"唯心所变"？ || 014-01第十四部分：终极探究-1.化识转智", "chapter": ""}, {"id": "GXQwobZvhwk", "title": "什么是智慧的境界？哲学教授带你顿悟 || 014-02第十四部分：探究-2.", "chapter": ""}, {"id": "qd0ZvyRcEZg", "title": "揭秘"慧根"：聪明不是慧根，利他之心才是！ || 014-03第十四部分：探究-3.", "chapter": ""}];
-        
-        const STORAGE_KEY = 'gcl-philosophy-completed-v2';
-        let completedVideos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-        let videoNotes = JSON.parse(localStorage.getItem(STORAGE_KEY + '-notes') || '{}');
+    const videos = [
+        {"id": "7rtKMBjAS6M", "title": "哲學入門：看不懂時代？告別迷茫焦慮"},
+        {"id": "d_zRI9C58TQ", "title": "社會撕扯感：我們為何總在規則中左右為難？"},
+        {"id": "lYaZYnsIF9k", "title": "焦慮根源：無效思考 vs 有效行動"},
+        {"id": "SUEz1hEMa4U", "title": "哲學課：如何透過現象看本質？世界觀入門"},
+        {"id": "IlslaeWhWRY", "title": "康德哲學：想像力的三個層次與無限思考"},
+        {"id": "lDmBQWE9E4c", "title": "數字主義：現實與理想如何相互轉化？"},
+        {"id": "ABjAQ7C4zoo", "title": "哲學入門：思想的力量有多大？"},
+        {"id": "8zBllXi2kqc", "title": "人際關係本質：深度解析利權情理法五大類型"},
+        {"id": "uvgII557itA", "title": "肉體與靈魂：探索有限與無限的哲學奧秘"},
+        {"id": "5_CT2EWmAVw", "title": "哲學啟智：普通人為什麼要學哲學？"},
+        {"id": "Y4o8kJ8smn8", "title": "哲學入門：快速了解形而上學、認識論與價值論"},
+        {"id": "Fuen1_JmSZI", "title": "康德哲學革命：認識論如何顛覆世界觀？"},
+        {"id": "ml2K8sn5R4M", "title": "哲學的功能：改變你的思想和觀念"},
+        {"id": "T35KotVdZx8", "title": "思維模式：學者、商人的根本差別在哪？"},
+        {"id": "wsyquc9lvls", "title": "因果思維：從休謨、康德到禪宗公案"},
+        {"id": "VtbyP0c3srY", "title": "辯證思維：哲學核心，從古希臘聊到黑格爾"},
+        {"id": "7wf-vxSDKhs", "title": "系統思維深度解析：把握存在的價值"},
+        {"id": "2Jc1aLI4tjA", "title": "思維的利器：哲學課帶你提升思考力"},
+        {"id": "etKnVw6pNGw", "title": "文字如何塑造思維？象形vs拼音的秘密"},
+        {"id": "jIeh042B4i0", "title": "數學是什麼？理解世界本質的形式工具"},
+        {"id": "XyPmOE7iDuc", "title": "康德哲學：藝術是情感的工具，美是自由的快感"},
+        {"id": "cXujkaPaPe8", "title": "郭春林哲學：深度思考，從理解概念開始"},
+        {"id": "nZDI_VzSEeg", "title": "AI時代，你真的會提問嗎？提升問題意識告別焦慮"},
+        {"id": "_8nxMNuaLVU", "title": "深度思維的6個循環：從控制情感到定義問題"},
+        {"id": "GQymJtplCdk", "title": "人性的真相：康德與黑格爾的哲學解讀"},
+        {"id": "Io6Hlaout08", "title": "人性真相：善惡分類與社會性管理學應用"},
+        {"id": "CTuV4EAQpCE", "title": "經濟學入門：理解人的經濟性是第一步"},
+        {"id": "lFuxG_fdHyw", "title": "知人識面難知心？掌握識人八宮法"},
+        {"id": "j8V1MY61GyA", "title": "劉劭人物誌九宮判斷法：古人識人智慧"},
+        {"id": "gMu7o_7lXFk", "title": "趙雲長短經：孔子五儀識人術"},
+        {"id": "ki3kXUU5ynU", "title": "郭春林：人生真諦與向死而生"},
+        {"id": "UmBl9LJXS84", "title": "孔子人生六階段：15歲志於學學什麼？"},
+        {"id": "y473dywbnj4", "title": "人生觀大比拼：一世、二世、三世學說哪個是你的信仰？"},
+        {"id": "KTl3PC8J-qw", "title": "中西文化大不同？郭志林談文化融合與性格"},
+        {"id": "onta0SS9PZw", "title": "宗教如何幫你超越生死？獲得內心平靜"},
+        {"id": "9AX0KzcESKQ", "title": "郭志林哲學：文化融合與中西方文化性格差異"},
+        {"id": "BZnI7aoKbMU", "title": "生活哲學：成功的三角形與人生智慧"},
+        {"id": "k_OEkwUR0aA", "title": "人生五種活法深度解析：你選哪一種？"},
+        {"id": "3VpCoJ25VhY", "title": "人生必知的7大生活法則"},
+        {"id": "_GMD-pOf97M", "title": "郭春林哲學：精英的引領與生命5大向度"},
+        {"id": "lt8AyowhKCI", "title": "你是精英嗎？揭秘精英必備的4大特質"},
+        {"id": "M7Djyosjk8Q", "title": "精英思維揭秘：你與成功人士的差距在哪？"},
+        {"id": "-XPLkYBrHXI", "title": "哲學智慧：終極探究與心的力量"},
+        {"id": "GXQwobZvhwk", "title": "什麼是智慧的境界？哲學教授帶你頓悟"},
+        {"id": "qd0ZvyRcEZg", "title": "揭秘慧根：聰明不是慧根，利他之心才是！"}
+    ];
+    
+    const STORAGE_KEY = 'gcl-philosophy-v3';
+    let completed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    let notes = JSON.parse(localStorage.getItem(STORAGE_KEY + '-notes') || '{}');
 
-        function saveAll() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(completedVideos));
-            localStorage.setItem(STORAGE_KEY + '-notes', JSON.stringify(videoNotes));
-            updateStats();
-        }
+    function save() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(completed));
+        localStorage.setItem(STORAGE_KEY + '-notes', JSON.stringify(notes));
+        updateStats();
+    }
 
-        function toggleNotes(idx) {
-            const panel = document.getElementById('notes-' + idx);
-            if (panel.style.display === 'block') {
-                panel.style.display = 'none';
-            } else {
-                panel.style.display = 'block';
+    function toggleNotes(idx) {
+        const panel = document.getElementById('notes-' + idx);
+        panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function saveNote(idx) {
+        const note = document.getElementById('note-' + idx).value;
+        notes[videos[idx].id] = note;
+        localStorage.setItem(STORAGE_KEY + '-notes', JSON.stringify(notes));
+        alert('筆記已儲存！');
+    }
+
+    function updateNotesCount() {
+        const count = Object.keys(notes).filter(k => notes[k] && notes[k].trim()).length;
+        document.getElementById('notesCount').textContent = count;
+    }
+
+    function exportNotes() {
+        let text = '# 哲學智慧 筆記\n\n';
+        videos.forEach((v, i) => {
+            const note = notes[v.id] || '';
+            if (note.trim()) {
+                text += '## ' + (i+1) + '. ' + v.title + '\n' + note + '\n\n';
             }
+        });
+        if (text === '# 哲學智慧 筆記\n\n') {
+            alert('目前沒有筆記');
+            return;
         }
+        const blob = new Blob([text], { type: 'text/markdown' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'philosophy-notes.md';
+        a.click();
+    }
 
-        function saveNote(idx) {
-            const note = document.getElementById('note-' + idx).value;
-            videoNotes[videos[idx].id] = note;
-            localStorage.setItem(STORAGE_KEY + '-notes', JSON.stringify(videoNotes));
-            alert('筆記已儲存！');
+    function toggleComplete(idx) {
+        const id = videos[idx].id;
+        if (completed.includes(id)) {
+            completed = completed.filter(x => x !== id);
+        } else {
+            completed.push(id);
         }
+        save();
+        render();
+    }
 
-        function updateNotesCount() {
-            const count = Object.keys(videoNotes).filter(k => videoNotes[k] && videoNotes[k].trim()).length;
-            document.getElementById('notesCount').textContent = count;
-        }
+    function updateStats() {
+        document.getElementById('completedCount').textContent = completed.length;
+        document.getElementById('progressText').textContent = completed.length + ' / ' + videos.length;
+        const p = Math.round(completed.length / videos.length * 100);
+        document.getElementById('progressPercent').textContent = p + '%';
+        document.getElementById('progressFill').style.width = p + '%';
+        updateNotesCount();
+    }
 
-        function exportNotes() {
-            let text = '# 哲學智慧 筆記\n\n';
-            videos.forEach((v, i) => {
-                const note = videoNotes[v.id] || '';
-                if (note.trim()) {
-                    text += '## ' + (i+1) + '. ' + v.title + '\n';
-                    text += note + '\n\n';
-                }
-            });
-            if (text === '# 哲學智慧 筆記\n\n') {
-                alert('目前沒有筆記');
-                return;
-            }
-            const blob = new Blob([text], { type: 'text/markdown' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = 'philosophy-notes.md';
-            a.click();
-        }
+    function render() {
+        const list = document.getElementById('videoList');
+        list.innerHTML = videos.map((v, i) => {
+            const isDone = completed.includes(v.id);
+            const noteVal = (notes[v.id] || '');
+            return '<div class="video-item ' + (isDone ? 'completed' : '') + '" onclick="toggleComplete(' + i + ')">' +
+                '<div class="video-header">' +
+                    '<div class="video-number">' + (i+1) + '</div>' +
+                    '<div class="video-title">' + v.title + '</div>' +
+                    '<div class="video-actions">' +
+                        '<a href="https://youtu.be/' + v.id + '" target="_blank" class="video-link" onclick="event.stopPropagation()">▶</a>' +
+                        '<button class="notes-btn" onclick="event.stopPropagation();toggleNotes(' + i + ')">📝</button>' +
+                        '<div class="check-btn"></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="notes-panel" id="notes-' + i + '">' +
+                    '<textarea id="note-' + i + '" placeholder="在這裡記錄筆記...">' + noteVal + '</textarea>' +
+                    '<button class="save-btn" onclick="saveNote(' + i + ')">💾 儲存筆記</button>' +
+                '</div>' +
+            '</div>';
+        }).join('');
+        updateStats();
+    }
 
-        function toggleComplete(idx) {
-            const id = videos[idx].id;
-            if (completedVideos.includes(id)) {
-                completedVideos = completedVideos.filter(x => x !== id);
-            } else {
-                completedVideos.push(id);
-            }
-            saveAll();
+    function resetProgress() {
+        if(confirm('確定重置？這也會刪除所有筆記')) {
+            completed = [];
+            notes = {};
+            save();
             render();
         }
+    }
 
-        function updateStats() {
-            document.getElementById('completedCount').textContent = completedVideos.length;
-            document.getElementById('progressText').textContent = completedVideos.length + ' / ' + videos.length;
-            const p = Math.round(completedVideos.length / videos.length * 100);
-            document.getElementById('progressPercent').textContent = p + '%';
-            document.getElementById('progressFill').style.width = p + '%';
-            updateNotesCount();
-        }
-
-        function render() {
-            const list = document.getElementById('videoList');
-            list.innerHTML = videos.map((v, i) => {
-                const isDone = completedVideos.includes(v.id);
-                const noteVal = (videoNotes[v.id] || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                return '<div class="video-item ' + (isDone ? 'completed' : '') + '" onclick="toggleComplete(' + i + ')">' +
-                    '<div class="video-header">' +
-                        '<div class="video-number">' + (i+1) + '</div>' +
-                        '<div class="video-title">' + v.title + '</div>' +
-                        '<div class="video-actions">' +
-                            '<a href="https://youtu.be/' + v.id + '" target="_blank" class="video-link" onclick="event.stopPropagation()">▶</a>' +
-                            '<button class="notes-btn" onclick="event.stopPropagation();toggleNotes(' + i + ')">📝</button>' +
-                            '<div class="check-btn"></div>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="notes-panel" id="notes-' + i + '">' +
-                        '<textarea id="note-' + i + '" placeholder="在這裡記錄筆記...">' + noteVal + '</textarea>' +
-                        '<button class="save-btn" onclick="saveNote(' + i + ')">💾 儲存筆記</button>' +
-                    '</div>' +
-                '</div>';
-            }).join('');
-            updateStats();
-        }
-
-        function resetProgress() {
-            if(confirm('確定重置？這也會刪除所有筆記')) {
-                completedVideos = [];
-                videoNotes = {};
-                saveAll();
-                render();
-            }
-        }
-
-        render();
+    render();
     </script>
 </body>
 </html>
