@@ -20,24 +20,30 @@
         .progress-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
         .progress-fill { height: 100%; background: #feca57; border-radius: 4px; transition: width 0.3s ease; }
         
-        .video-item { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; margin-bottom: 12px; cursor: pointer; border: 2px solid transparent; transition: all 0.3s ease; }
+        .video-item { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; margin-bottom: 12px; border: 2px solid transparent; transition: all 0.3s ease; }
         .video-item:hover { background: rgba(255,255,255,0.12); }
         .video-item.completed { border-color: #feca57; background: rgba(254,202,87,0.1); }
         
-        .video-header { display: flex; align-items: center; gap: 12px; }
+        .video-header { display: flex; align-items: center; gap: 12px; cursor: pointer; }
         .video-number { width: 32px; height: 32px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
         .video-item.completed .video-number { background: #feca57; color: #1a1a2e; }
-        .video-title { flex: 1; font-size: 0.95em; }
+        .video-title { flex: 1; font-size: 0.95em; cursor: pointer; }
         .video-actions { display: flex; gap: 8px; align-items: center; }
         .video-link { color: #feca57; text-decoration: none; padding: 6px 12px; background: rgba(254,202,87,0.2); border-radius: 15px; font-size: 0.8em; }
         .notes-btn { background: rgba(255,200,0,0.2); border: 1px solid #ffc800; color: #ffc800; padding: 6px 12px; border-radius: 15px; cursor: pointer; font-size: 0.8em; }
-        .check-btn { width: 26px; height: 26px; border: 2px solid #555; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .check-btn { width: 26px; height: 26px; border: 2px solid #555; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .video-item.completed .check-btn { background: #feca57; border-color: #feca57; }
         .video-item.completed .check-btn::after { content: "✓"; color: #1a1a2e; font-weight: bold; font-size: 0.8em; }
         
-        .notes-panel { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .notes-panel.show { display: block; }
-        .notes-panel textarea { width: 100%; height: 100px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; color: #fff; font-size: 0.9em; resize: vertical; font-family: inherit; }
+        .notes-panel { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .notes-panel textarea { 
+            width: 100%; height: 100px; 
+            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); 
+            border-radius: 8px; padding: 10px; color: #fff; font-size: 0.9em; 
+            resize: vertical; font-family: inherit; 
+            cursor: text !important;
+        }
+        .notes-panel textarea:focus { outline: 2px solid #feca57; }
         .notes-panel .save-btn { background: #feca57; border: none; padding: 8px 16px; border-radius: 8px; color: #1a1a2e; font-weight: bold; cursor: pointer; margin-top: 8px; }
         
         footer { text-align: center; padding: 20px; color: #666; font-size: 0.9em; }
@@ -91,12 +97,14 @@
         updateStats();
     }
 
-    function toggleNotes(idx) {
+    function toggleNotes(idx, e) {
+        if (e) e.stopPropagation();
         const panel = document.getElementById('notes-' + idx);
         panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
     }
 
-    function saveNote(idx) {
+    function saveNote(idx, e) {
+        if (e) e.stopPropagation();
         const note = document.getElementById('note-' + idx).value;
         notes[videos[idx].id] = note;
         localStorage.setItem(STORAGE_KEY + '-notes', JSON.stringify(notes));
@@ -152,19 +160,19 @@
         list.innerHTML = videos.map((v, i) => {
             const isDone = completed.includes(v.id);
             const noteVal = notes[v.id] || '';
-            return '<div class="video-item ' + (isDone ? 'completed' : '') + '" onclick="toggleComplete(' + i + ')">' +
-                '<div class="video-header">' +
+            return '<div class="video-item ' + (isDone ? 'completed' : '') + '">' +
+                '<div class="video-header" onclick="toggleComplete(' + i + ')">' +
                     '<div class="video-number">' + (i+1) + '</div>' +
                     '<div class="video-title">' + v.title + '</div>' +
                     '<div class="video-actions">' +
-                        '<a href="https://youtu.be/' + v.id + '" target="_blank" class="video-link" onclick="event.stopPropagation()">▶</a>' +
-                        '<button class="notes-btn" onclick="event.stopPropagation();toggleNotes(' + i + ')">📝</button>' +
-                        '<div class="check-btn"></div>' +
+                        '<a href="https://youtu.be/' + v.id + '" target="_blank" class="video-link">▶</a>' +
+                        '<button class="notes-btn" onclick="toggleNotes(' + i + ', event)">📝</button>' +
+                        '<div class="check-btn" onclick="toggleComplete(' + i + ')"></div>' +
                     '</div>' +
                 '</div>' +
-                '<div class="notes-panel" id="notes-' + i + '">' +
+                '<div class="notes-panel" id="notes-' + i + '" style="display:none">' +
                     '<textarea id="note-' + i + '" placeholder="在這裡記錄筆記...">' + noteVal + '</textarea>' +
-                    '<button class="save-btn" onclick="saveNote(' + i + ')">💾 儲存筆記</button>' +
+                    '<button class="save-btn" onclick="saveNote(' + i + ', event)">💾 儲存筆記</button>' +
                 '</div>' +
             '</div>';
         }).join('');
