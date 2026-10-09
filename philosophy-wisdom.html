@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>哲學智慧｜郭春林 - 學習中心</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff6b6b, #feca57);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.1em;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #feca57;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #888;
+        }
+        
+        .progress-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #feca57);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        
+        .video-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .video-item {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .video-item:hover {
+            background: rgba(255,255,255,0.12);
+            transform: translateX(5px);
+        }
+        
+        .video-item.completed {
+            border-color: #feca57;
+            background: rgba(254,202,87,0.1);
+        }
+        
+        .video-item.completed .video-number {
+            background: #feca57;
+            color: #1a1a2e;
+        }
+        
+        .video-number {
+            width: 35px;
+            height: 35px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .video-info {
+            flex: 1;
+        }
+        
+        .video-title {
+            font-size: 1em;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        
+        .video-chapter {
+            font-size: 0.8em;
+            color: #888;
+        }
+        
+        .video-link {
+            color: #feca57;
+            text-decoration: none;
+            padding: 8px 15px;
+            background: rgba(254,202,87,0.1);
+            border-radius: 20px;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .video-link:hover {
+            background: rgba(254,202,87,0.3);
+        }
+        
+        .check-btn {
+            width: 28px;
+            height: 28px;
+            border: 2px solid #555;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .check-btn:hover {
+            border-color: #feca57;
+        }
+        
+        .video-item.completed .check-btn {
+            background: #feca57;
+            border-color: #feca57;
+        }
+        
+        .check-btn::after {
+            content: "✓";
+            color: #1a1a2e;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .video-item.completed .check-btn::after {
+            display: block;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .reset-btn {
+            background: rgba(255,100,100,0.2);
+            border: 1px solid #ff6464;
+            color: #ff6464;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .reset-btn:hover {
+            background: rgba(255,100,100,0.4);
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.6em; }
+            .stats { gap: 20px; }
+            .video-item { flex-wrap: wrap; }
+            .video-link { margin-top: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 哲學智慧</h1>
+            <p class="subtitle">郭春林 | 44堂必修課</p>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalVideos">44</div>
+                    <div class="stat-label">總影片數</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="completedCount">0</div>
+                    <div class="stat-label">已完成</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="progressPercent">0%</div>
+                    <div class="stat-label">學習進度</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="progress-section">
+            <div class="progress-header">
+                <span>學習進度</span>
+                <span id="progressText">0 / 44</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="video-list" id="videoList">
+            <!-- 影片列表會由 JavaScript 生成 -->
+        </div>
+
+        <footer>
+            <p>點擊影片標題可跳轉到 YouTube 觀看</p>
+            <p>點擊圓圈可標記已完成</p>
+            <button class="reset-btn" onclick="resetProgress()">重置進度</button>
+        </footer>
+    </div>
+
+    <script>
+        const videos = [
+            { id: "7rtKMBjAS6M", title: "哲學入門：日常哲思", chapter: "001-01 第一部分：日常哲思" },
+            { id: "d_zRI9C58TQ", title: "社會掙扎感", chapter: "001-02 日常哲思-社會的掙扎" },
+            { id: "y473dywbnj4", title: "人生觀大比拼", chapter: "001-03 日常哲思-生活的焦慮" },
+            { id: "ABjAQ7C4zoo", title: "哲學入門：人與自然的關係", chapter: "003-01 第三部分：思想力量" },
+            { id: "8zBllXi2kqc", title: "人際關係本質", chapter: "003-02 第三部分：思想力量" },
+            { id: "uvgII557itA", title: "肉體與靈魂", chapter: "003-03 第三部分：思想力量" },
+            { id: "5_CT2EWmAVw", title: "哲學啟智：普通人為什麼要學哲學？", chapter: "004-01 第四部分：哲學啟智" },
+            { id: "Y4o8kJ8smn8", title: "哲學入門：哲學由哪些部分組成", chapter: "004-02 第四部分：哲學啟智" },
+            { id: "Fuen1_JmSZI", title: "康德哲學革命：認知論如何顛覆世界觀？", chapter: "004-03 第四部分：哲學啟智" },
+            { id: "ml2K8sn5R4M", title: "哲學的功能：改變你的思想和觀念", chapter: "004-04 第四部分：哲學啟智" },
+            { id: "T35KotVdZx8", title: "思維模式：學者、商人的根本差別在哪？", chapter: "005-01 第五部分：思維模式" },
+            { id: "wsyquc9lvls", title: "因為思維：從休謨、康德到儒家公案", chapter: "005-02 第五部分：思維模式" },
+            { id: "VtbyP0c3srY", title: "辯證思維：哲學框架，從古希臘到黑格爾", chapter: "005-03 第五部分：思維模式" },
+            { id: "7wf-vxSDKhs", title: "系統思維深度解析：把握存在的價值", chapter: "005-04 第五部分：思維模式" },
+            { id: "SUEz1hEMa4U", title: "哲學課：如何透過現象看本質？世界觀入門", chapter: "002-01 第二部分：世界洞見" },
+            { id: "IlslaeWhWRY", title: "康德哲學：想像力的三個層次與無限思考", chapter: "002-02 第二部分：世界洞見" },
+            { id: "lDmBQWE9E4c", title: "數字主義：現實與理學如何相互轉化？", chapter: "002-03 第二部分：世界洞見" },
+            { id: "2Jc1aLI4tjA", title: "思維的利器：哲學課帶你提升思維力", chapter: "006-01 第六部分：思維利器" },
+            { id: "etKnVw6pNGw", title: "文字如何塑造思維？象形vs拼音的秘密", chapter: "006-02 第六部分：思維利器" },
+            { id: "jIeh042B4i0", title: "數學是什麼？理解世界本質的」形式工具」", chapter: "006-03 第六部分：思維利器" },
+            { id: "XyPmOE7iDuc", title: "康德哲學：藝術是情感的工具，美是自由的快感", chapter: "006-04 第六部分：思維利器" },
+            { id: "cXujkaPa8", title: "郭春林哲學：深度思考，從理解」概念」開始", chapter: "007-01 第七部分：思維懶致遍" },
+            { id: "nZDI_VzSEeg", title: "AI時代，你真的會提問嗎？提問題意識告別焦慮", chapter: "007-02 第七部分：思維懶致遍" },
+            { id: "_8nxMNuaLVU", title: "深度思維的6個循環：從控制情緒到定義問題", chapter: "007-03 第七部分：思維懶致遍" },
+            { id: "BZnI7aoKbMU", title: "生活哲學：成功三角形與人生智慧", chapter: "012-01 第十二部分：生活哲學" },
+            { id: "k_OEkwUR0aA", title: "人生五種活法深度解析：你選哪一種？", chapter: "012-02 第十二部分：生活哲學" },
+            { id: "3VpCoJ25VhY", title: "人生必知的7大生活法則", chapter: "012-03 第十二部分：生活哲學" },
+            { id: "ki3kXUU5ynU", title: "郭春林：人生真諦與向死而生", chapter: "010-01 第十部分：人生真諦" },
+            { id: "UmBl9LJXS84", title: "孔子人生六階段：15歲」志於學」學什麼？", chapter: "010-02 第十部分：人生真諦" },
+            { id: "y473dywbnj4", title: "人生觀大比拼：一世、二世、三世學說哪個是你的依歸？", chapter: "010-03 第十部分：人生真諦" },
+            { id: "CTuV4EAQpCE", title: "經學入門：理解」人的經濟性」是第一步", chapter: "008-03 第八部分：人真相" },
+            { id: "GXQwobZvhwk", title: "人真相：康德與黑格爾的哲學解讀", chapter: "008-01 第八部分：人真相" },
+            { id: "Io6Hlaout08", title: "人真相：善惡分類與社會倫理學應用", chapter: "008-02 第八部分：人真相" },
+            { id: "lYaZYnsIF9k", title: "智人識面難知心？掌握智人八宮法", chapter: "009-01 第九部分：智人智慧" },
+            { id: "j8V1MY61GyA", title: "劉備：人物誌」九宮判斷法：古人智人智慧", chapter: "009-02 第九部分：智人智慧" },
+            { id: "gMu7o_7lXFk", title: "趙雲：長短經」：孔子五儀識人，你是哪種人？", chapter: "009-03 第九部分：智人智慧" },
+            { id: "M7Djyosjk8Q", title: "精英思維揭密：你與成功人士的差距在哪？", chapter: "013-03 第十三部分：精英引領" },
+            { id: "_GMD-pOf97M", title: "郭春林哲學：精英的引領與生命5大向度", chapter: "013-01 第十三部分：精英引領" },
+            { id: "lt8AyowhKCI", title: "你是精英嗎？揭秘精英必備的4大特質", chapter: "013-02 第十三部分：精英引領" },
+            { id: "9AX0KzcESKQ", title: "郭志林哲學：文化融合與中西文化性格差異", chapter: "011-03 第十一部分：文化融合" },
+            { id: "M7DjyosjkQ", title: "中西文化大不同？郭春林談文化融合與性格", chapter: "011-01 第十一部分：文化融合" },
+            { id: "onta0SS9PZw", title: "宗教如何幫你超越生死？獲得內心平靜", chapter: "011-02 第十一部分：文化融合" },
+            { id: "-XPLkYBrHXI", title: "哲學智慧：終極探尋與心的力量，何為」唯心變」？", chapter: "014-01 第十四部分：終極探尋" },
+            { id: "ki3kXUU5ynU", title: "什麼是智慧的邊界？哲學教學帶你領悟", chapter: "014-02 第十四部分：終極探尋" },
+            { id: "qd0ZvyRcEZg", title: "揭秘」慧根」：聰明不是慧根，利他之心才是！", chapter: "014-03 第十四部分：終極探尋" }
+        ];
+
+        // 從 localStorage 讀取進度
+        let completedVideos = JSON.parse(localStorage.getItem('gcl-philosophy-completed') || '[]');
+
+        function saveProgress() {
+            localStorage.setItem('gcl-philosophy-completed', JSON.stringify(completedVideos));
+            updateStats();
+        }
+
+        function toggleComplete(index) {
+            const videoId = videos[index].id;
+            if (completedVideos.includes(videoId)) {
+                completedVideos = completedVideos.filter(id => id !== videoId);
+            } else {
+                completedVideos.push(videoId);
+            }
+            saveProgress();
+            renderList();
+        }
+
+        function updateStats() {
+            document.getElementById('completedCount').textContent = completedVideos.length;
+            document.getElementById('progressText').textContent = `${completedVideos.length} / ${videos.length}`;
+            const percent = Math.round((completedVideos.length / videos.length) * 100);
+            document.getElementById('progressPercent').textContent = `${percent}%`;
+            document.getElementById('progressFill').style.width = `${percent}%`;
+        }
+
+        function renderList() {
+            const list = document.getElementById('videoList');
+            list.innerHTML = videos.map((video, index) => `
+                <div class="video-item ${completedVideos.includes(video.id) ? 'completed' : ''}" onclick="toggleComplete(${index})">
+                    <div class="video-number">${index + 1}</div>
+                    <div class="video-info">
+                        <div class="video-title">${video.title}</div>
+                        <div class="video-chapter">${video.chapter}</div>
+                    </div>
+                    <a href="https://youtu.be/${video.id}" target="_blank" class="video-link" onclick="event.stopPropagation()">
+                        ▶ 看影片
+                    </a>
+                    <div class="check-btn"></div>
+                </div>
+            `).join('');
+            updateStats();
+        }
+
+        function resetProgress() {
+            if (confirm('確定要重置所有進度嗎？')) {
+                completedVideos = [];
+                saveProgress();
+                renderList();
+            }
+        }
+
+        // 初始化
+        renderList();
+    </script>
+</body>
+</html>
