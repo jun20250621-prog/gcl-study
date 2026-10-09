@@ -19,30 +19,18 @@
         .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.9em; }
         .progress-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
         .progress-fill { height: 100%; background: #feca57; border-radius: 4px; transition: width 0.3s ease; }
-        
-        .video-item { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; margin-bottom: 12px; cursor: pointer; border: 2px solid transparent; transition: all 0.3s ease; }
+        .video-item { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; margin-bottom: 12px; cursor: pointer; border: 2px solid transparent; transition: all 0.3s ease; display: flex; align-items: center; gap: 12px; }
         .video-item:hover { background: rgba(255,255,255,0.12); }
         .video-item.completed { border-color: #feca57; background: rgba(254,202,87,0.1); }
-        
-        .video-header { display: flex; align-items: center; gap: 12px; }
         .video-number { width: 32px; height: 32px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
         .video-item.completed .video-number { background: #feca57; color: #1a1a2e; }
         .video-title { flex: 1; font-size: 0.95em; }
-        .video-actions { display: flex; gap: 8px; align-items: center; }
-        .video-link { color: #feca57; text-decoration: none; padding: 6px 12px; background: rgba(254,202,87,0.2); border-radius: 15px; font-size: 0.8em; }
-        .notes-btn { background: rgba(255,200,0,0.2); border: 1px solid #ffc800; color: #ffc800; padding: 6px 12px; border-radius: 15px; cursor: pointer; font-size: 0.8em; }
-        .check-btn { width: 26px; height: 26px; border: 2px solid #555; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .video-link { color: #feca57; text-decoration: none; padding: 6px 12px; background: rgba(254,202,87,0.2); border-radius: 15px; font-size: 0.8em; flex-shrink: 0; }
+        .check-btn { width: 26px; height: 26px; border: 2px solid #555; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         .video-item.completed .check-btn { background: #feca57; border-color: #feca57; }
         .video-item.completed .check-btn::after { content: "✓"; color: #1a1a2e; font-weight: bold; font-size: 0.8em; }
-        
-        .notes-panel { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .notes-panel.show { display: block; }
-        .notes-panel textarea { width: 100%; height: 100px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; color: #fff; font-size: 0.9em; resize: vertical; font-family: inherit; }
-        .notes-panel .save-btn { background: #feca57; border: none; padding: 8px 16px; border-radius: 8px; color: #1a1a2e; font-weight: bold; cursor: pointer; margin-top: 8px; }
-        
         footer { text-align: center; padding: 20px; color: #666; font-size: 0.9em; }
         .reset-btn { background: rgba(255,100,100,0.2); border: 1px solid #ff6464; color: #ff6464; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9em; }
-        .export-btn { background: rgba(0,150,255,0.2); border: 1px solid #0096ff; color: #0096ff; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9em; margin-left: 10px; }
     </style>
 </head>
 <body>
@@ -54,7 +42,6 @@
                 <div class="stat-item"><div class="stat-number" id="totalVideos">45</div><div class="stat-label">總影片數</div></div>
                 <div class="stat-item"><div class="stat-number" id="completedCount">0</div><div class="stat-label">已完成</div></div>
                 <div class="stat-item"><div class="stat-number" id="progressPercent">0%</div><div class="stat-label">學習進度</div></div>
-                <div class="stat-item"><div class="stat-number" id="notesCount">0</div><div class="stat-label">筆記數</div></div>
             </div>
         </header>
         <div class="progress-section">
@@ -63,9 +50,8 @@
         </div>
         <div id="videoList"></div>
         <footer>
-            <p>點擊圓圈標記完成 | 點擊筆記按鈕寫筆記</p>
+            <p>點擊圓圈標記完成</p>
             <button class="reset-btn" onclick="resetProgress()">重置進度</button>
-            <button class="export-btn" onclick="exportNotes()">📤 匯出筆記</button>
         </footer>
     </div>
     <script>
@@ -117,50 +103,12 @@
         {"id": "qd0ZvyRcEZg", "title": "揭秘慧根：聰明不是慧根，利他之心才是！"}
     ];
     
-    const STORAGE_KEY = 'gcl-philosophy-notes';
+    const STORAGE_KEY = 'gcl-philosophy-simple';
     let completed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    let notes = JSON.parse(localStorage.getItem(STORAGE_KEY + '-notes') || '{}');
 
     function save() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(completed));
-        localStorage.setItem(STORAGE_KEY + '-notes', JSON.stringify(notes));
         updateStats();
-    }
-
-    function toggleNotes(idx) {
-        const panel = document.getElementById('notes-' + idx);
-        panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-    }
-
-    function saveNote(idx) {
-        const note = document.getElementById('note-' + idx).value;
-        notes[videos[idx].id] = note;
-        localStorage.setItem(STORAGE_KEY + '-notes', JSON.stringify(notes));
-        alert('筆記已儲存！');
-    }
-
-    function updateNotesCount() {
-        const count = Object.keys(notes).filter(k => notes[k] && notes[k].trim()).length;
-        document.getElementById('notesCount').textContent = count;
-    }
-
-    function exportNotes() {
-        let text = '# 哲學智慧 筆記\n\n';
-        videos.forEach((v, i) => {
-            const note = notes[v.id] || '';
-            if (note.trim()) {
-                text += '## ' + (i+1) + '. ' + v.title + '\n' + note + '\n\n';
-            }
-        });
-        if (text === '# 哲學智慧 筆記\n\n') {
-            alert('目前沒有筆記');
-            return;
-        }
-        const blob = new Blob([text], { type: 'text/markdown' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'philosophy-notes.md';
-        a.click();
     }
 
     function toggleComplete(idx) {
@@ -180,37 +128,25 @@
         const p = Math.round(completed.length / videos.length * 100);
         document.getElementById('progressPercent').textContent = p + '%';
         document.getElementById('progressFill').style.width = p + '%';
-        updateNotesCount();
     }
 
     function render() {
         const list = document.getElementById('videoList');
         list.innerHTML = videos.map((v, i) => {
             const isDone = completed.includes(v.id);
-            const noteVal = notes[v.id] || '';
             return '<div class="video-item ' + (isDone ? 'completed' : '') + '" onclick="toggleComplete(' + i + ')">' +
-                '<div class="video-header">' +
-                    '<div class="video-number">' + (i+1) + '</div>' +
-                    '<div class="video-title">' + v.title + '</div>' +
-                    '<div class="video-actions">' +
-                        '<a href="https://youtu.be/' + v.id + '" target="_blank" class="video-link" onclick="event.stopPropagation()">▶</a>' +
-                        '<button class="notes-btn" onclick="event.stopPropagation();toggleNotes(' + i + ')">📝</button>' +
-                        '<div class="check-btn"></div>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="notes-panel" id="notes-' + i + '">' +
-                    '<textarea id="note-' + i + '" placeholder="在這裡記錄筆記...">' + noteVal + '</textarea>' +
-                    '<button class="save-btn" onclick="saveNote(' + i + ')">💾 儲存筆記</button>' +
-                '</div>' +
+                '<div class="video-number">' + (i+1) + '</div>' +
+                '<div class="video-title">' + v.title + '</div>' +
+                '<a href="https://youtu.be/' + v.id + '" target="_blank" class="video-link" onclick="event.stopPropagation()">▶</a>' +
+                '<div class="check-btn"></div>' +
             '</div>';
         }).join('');
         updateStats();
     }
 
     function resetProgress() {
-        if(confirm('確定重置？這也會刪除所有筆記')) {
+        if(confirm('確定重置？')) {
             completed = [];
-            notes = {};
             save();
             render();
         }
