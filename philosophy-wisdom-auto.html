@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>課程｜學習中心</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); min-height: 100vh; color: #fff; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.05); border-radius: 20px; margin-bottom: 30px; backdrop-filter: blur(10px); }
+        h1 { font-size: 2.2em; margin-bottom: 10px; background: linear-gradient(90deg, #00d9ff, #00ff88); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { font-size: 1.1em; color: #aaa; margin-bottom: 20px; }
+        .stats { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 20px; }
+        .stat-item { text-align: center; }
+        .stat-number { font-size: 2em; font-weight: bold; color: #00d9ff; }
+        .stat-label { font-size: 0.9em; color: #888; }
+        .progress-section { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 20px; margin-bottom: 30px; }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .progress-bar { height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #00d9ff, #00ff88); border-radius: 5px; transition: width 0.3s ease; }
+        .video-list { display: grid; gap: 15px; }
+        .video-item { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px 20px; display: flex; align-items: center; gap: 15px; transition: all 0.3s ease; cursor: pointer; border: 2px solid transparent; }
+        .video-item:hover { background: rgba(255,255,255,0.12); transform: translateX(5px); }
+        .video-item.completed { border-color: #00ff88; background: rgba(255,255,255,0.1); }
+        .video-item.completed .video-number { background: #00ff88; color: #1a1a2e; }
+        .video-number { width: 35px; height: 35px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+        .video-info { flex: 1; }
+        .video-title { font-size: 1em; margin-bottom: 5px; color: #fff; }
+        .video-chapter { font-size: 0.8em; color: #888; }
+        .video-link { color: #00d9ff; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.1); border-radius: 20px; font-size: 0.85em; transition: all 0.3s ease; white-space: nowrap; }
+        .video-link:hover { background: rgba(255,255,255,0.2); }
+        .check-btn { width: 28px; height: 28px; border: 2px solid #555; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .check-btn:hover { border-color: #00ff88; }
+        .video-item.completed .check-btn { background: #00ff88; border-color: #00ff88; }
+        .check-btn::after { content: "✓"; color: #1a1a2e; font-weight: bold; display: none; }
+        .video-item.completed .check-btn::after { display: block; }
+        footer { text-align: center; padding: 30px; color: #666; font-size: 0.9em; }
+        .reset-btn { background: rgba(255,100,100,0.2); border: 1px solid #ff6464; color: #ff6464; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9em; margin-top: 20px; }
+        @media (max-width: 600px) { h1 { font-size: 1.6em; } .stats { gap: 20px; } .video-item { flex-wrap: wrap; } .video-link { margin-top: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>課程</h1>
+            <p class="subtitle">45部影片</p>
+            <div class="stats">
+                <div class="stat-item"><div class="stat-number" id="totalVideos">45</div><div class="stat-label">總影片數</div></div>
+                <div class="stat-item"><div class="stat-number" id="completedCount">0</div><div class="stat-label">已完成</div></div>
+                <div class="stat-item"><div class="stat-number" id="progressPercent">0%</div><div class="stat-label">學習進度</div></div>
+            </div>
+        </header>
+        <div class="progress-section">
+            <div class="progress-header"><span>學習進度</span><span id="progressText">0 / 45</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%"></div></div>
+        </div>
+        <div class="video-list" id="videoList"></div>
+        <footer>
+            <p>點擊圓圈可標記已完成</p>
+            <button class="reset-btn" onclick="resetProgress()">重置進度</button>
+        </footer>
+    </div>
+    <script>
+        const videos = [{"id": "7rtKMBjAS6M", "title": "哲学入门：看不懂时代？告别迷茫焦虑 || 001-01第一部分：日常哲思-1. 时代的纷扰", "chapter": ""}, {"id": "d_zRI9C58TQ", "title": "社会撕扯感：我们为何总在规则中左右为难？ || 001-02第一部分：日常哲思-2. 社会的撕扯", "chapter": ""}, {"id": "lYaZYnsIF9k", "title": "焦虑根源：无效思考 vs 有效行动 || 001-03第一部分：日常哲思-3. 生活的焦虑", "chapter": ""}, {"id": "SUEz1hEMa4U", "title": "哲学课：如何透过现象看本质？世界观入门 || 002-01第二部分：世界洞见-1. 从唯物主义角度你会看到什么？", "chapter": ""}, {"id": "IlslaeWhWRY", "title": "康德哲学：想象力的三个层次与无限思考 || 002-02第二部分：世界洞见-2.从唯心主义角度你会想出什么？", "chapter": ""}, {"id": "lDmBQWE9E4c", "title": "数字主义：现实与理想如何相互转化？ || 002-03第二部分：世界洞见-3.从数字主义角度你会遭遇什么", "chapter": ""}, {"id": "ABjAQ7C4zoo", "title": "哲学入门：思想的力量有多大？从拿破仑到尼采 || 003-01第三部分：思想力量-1.人与自然的关系", "chapter": ""}, {"id": "8zBllXi2kqc", "title": "人际关系本质：深度解析利权情理法五大类型 || 003-02第三部分：思想力量-2.人与人的关系", "chapter": ""}, {"id": "uvgII557itA", "title": "肉体与灵魂：探索有限与无限的哲学奥秘 || 003-03第三部分：思想力量-3肉体与灵魂的关系", "chapter": ""}, {"id": "5_CT2EWmAVw", "title": "哲学启智：普通人为什么要学哲学？ || 004-01第四部分：哲学启智-1.哲学是什么？", "chapter": ""}, {"id": "Y4o8kJ8smn8", "title": "哲学入门：快速了解形而上学、认识论与价值论 || 004-02第四部分：哲学启智-2.哲学由哪几部分组成", "chapter": ""}, {"id": "Fuen1_JmSZI", "title": "康德哲学革命：认识论如何颠覆世界观？ || 004-03第四部分：哲学启智-3.哲学是怎样变化的", "chapter": ""}, {"id": "ml2K8sn5R4M", "title": "哲学的功能：改变你的思想和观念 || 004-04第四部分：哲学启智-4.哲学的功能和目的", "chapter": ""}, {"id": "T35KotVdZx8", "title": "思维模式：学者、商人、政治家的根本差别在哪？ || 005-01第五部分：思维模式-1.感性思维", "chapter": ""}, {"id": "wsyquc9lvls", "title": "因果思维：从休谟、康德到禅宗野狐禅公案 || 005-02第五部分：思维模式-2.因果思维", "chapter": ""}, {"id": "VtbyP0c3srY", "title": "辩证思维：哲学核心，从古希腊聊到黑格尔 || 005-03第五部分：思维模式-3.辩证思维", "chapter": ""}, {"id": "7wf-vxSDKhs", "title": "系统思维深度解析：把握存在的价值 || 005-04第五部分：思维模式-4.系统思维", "chapter": ""}, {"id": "2Jc1aLI4tjA", "title": "思维的利器：哲学课带你提升思考力 || 006-01第六部分：思维利器-1语言工具", "chapter": ""}, {"id": "etKnVw6pNGw", "title": "文字如何塑造思维？象形vs拼音的秘密 || 006-02第六部分：思维利器-2.文字工具", "chapter": ""}, {"id": "jIeh042B4i0", "title": "数学是什么？理解世界本质的“形式工具” || 006-03第六部分：思维利器-3.数学工具", "chapter": ""}, {"id": "XyPmOE7iDuc", "title": "康德哲学：艺术是情感的工具，美是自由的快感 || 006-04第六部分：思维利器-4. 艺术工具", "chapter": ""}, {"id": "cXujkaPaPe8", "title": "郭春林哲学：深度思考，从理解“概念”开始 || 007-01第七部分：思懒致庸-1.概念的九个层次", "chapter": ""}, {"id": "nZDI_VzSEeg", "title": "AI时代，你真的会提问吗？提升问题意识告别焦虑 || 007-02第七部分：思懒致庸-2.问题意识的五个构件", "chapter": ""}, {"id": "_8nxMNuaLVU", "title": "深度思考的6个循环：从控制情感到定义问题 || 007-03第七部分：思懒致庸-3.深度思考的六个循环", "chapter": ""}, {"id": "GQymJtplCdk", "title": "人性的真相：康德与黑格尔的哲学解读 || 008-01第八部分：人性真相-1.人的生物性", "chapter": ""}, {"id": "Io6Hlaout08", "title": "人性真相：善恶分类与社会性管理学应用 || 008-02第八部分：人性真相-2.人的社会性", "chapter": ""}, {"id": "CTuV4EAQpCE", "title": "经济学入门：理解“人的经济性”是第一步 || 008-03第八部分：人性真相-3.人的经济性", "chapter": ""}, {"id": "lFuxG_fdHyw", "title": "知人识面难知心？掌握识人八宫法 || 009-01第九部分：识人智慧-1个体人性的八宫结构", "chapter": ""}, {"id": "j8V1MY61GyA", "title": "刘劭《人物志》九征判断法：古人识人智慧 || 009-02第九部分：识人智慧-2中国文化的九征判断", "chapter": ""}, {"id": "gMu7o_7lXFk", "title": "赵瑞《长短经》：孔子五仪识人术，你是哪种人？ || 009-03第九部分：识人智慧-3.赵蕤的五仪解释.1", "chapter": ""}, {"id": "ki3kXUU5ynU", "title": "郭春林：人生真谛与向死而生 || 010-01第十部分：人生真谛-1.克尔凯郭尔的人生三个阶段划分", "chapter": ""}, {"id": "UmBl9LJXS84", "title": "孔子人生六阶段(一)：15岁“志于学”学什么？ || 010-02第十部分：人生真谛-2.孔子的人生六个阶段划分", "chapter": ""}, {"id": "y473dywbnj4", "title": "人生观大比拼：一世、二世、三世学说哪个是你的信仰？ || 010-03第十部分：人生真谛-3.人生的学说", "chapter": ""}, {"id": "KTl3PC8J-qw", "title": "中西文化大不同？郭志林谈文化融合与性格 || 011-01第十一部分：文化融合-1.人与文化", "chapter": ""}, {"id": "onta0SS9PZw", "title": "宗教如何帮你超越生死？获得内心平静 || 011-02第十一部分：文化融合-2.人与宗教", "chapter": ""}, {"id": "9AX0KzcESKQ", "title": "郭志林哲学：文化融合与中西方文化性格差异 || 011-03第十一部分：文化融合-3.人与艺术", "chapter": ""}, {"id": "BZnI7aoKbMU", "title": "生活哲学：成功的三角形与人生智慧 || 012-01第十二部分：生活哲学-1.成功的三角形", "chapter": ""}, {"id": "k_OEkwUR0aA", "title": "人生五种活法深度解析：你选哪一种？ || 012-02第十二部分：生活哲学-2.", "chapter": ""}, {"id": "3VpCoJ25VhY", "title": "人生必知的7大生活法则 || 012-03第十二部分：生活哲学-3. 生活应该服从哪些准则", "chapter": ""}, {"id": "_GMD-pOf97M", "title": "郭春林哲学：精英的引领与生命5大向度 || 013-01第十三部分：精英引领-1.", "chapter": ""}, {"id": "lt8AyowhKCI", "title": "你是精英吗？揭秘精英必备的4大特质 || 013-02第十三部分：精英引领-2.精英的四个基本特征", "chapter": ""}, {"id": "M7Djyosjk8Q", "title": "精英思维揭秘：你与成功人士的差距在哪？ || 013-03第十三部分：精英引领-3.精英的八个心智特征", "chapter": ""}, {"id": "-XPLkYBrHXI", "title": "哲学智慧：终极探究与心的力量，何为“唯心所变”？ || 014-01第十四部分：终极探究-1.化识转智", "chapter": ""}, {"id": "GXQwobZvhwk", "title": "什么是智慧的境界？哲学教授带你顿悟 || 014-02第十四部分：探究-2.", "chapter": ""}, {"id": "qd0ZvyRcEZg", "title": "揭秘“慧根”：聪明不是慧根，利他之心才是！ || 014-03第十四部分：探究-3.", "chapter": ""}];
+        const STORAGE_KEY = 'gcl----completed';
+        let completedVideos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        
+        function saveProgress() { localStorage.setItem(STORAGE_KEY, JSON.stringify(completedVideos)); updateStats(); }
+        function toggleComplete(index) { const id = videos[index].id; completedVideos.includes(id) ? completedVideos = completedVideos.filter(x => x !== id) : completedVideos.push(id); saveProgress(); renderList(); }
+        function updateStats() { document.getElementById('completedCount').textContent = completedVideos.length; document.getElementById('progressText').textContent = completedVideos.length + ' / ' + videos.length; const p = Math.round(completedVideos.length / videos.length * 100); document.getElementById('progressPercent').textContent = p + '%'; document.getElementById('progressFill').style.width = p + '%'; }
+        function renderList() { document.getElementById('videoList').innerHTML = videos.map((v, i) => '<div class="video-item ' + (completedVideos.includes(v.id) ? 'completed' : '') + '" onclick="toggleComplete(' + i + ')"><div class="video-number">' + (i+1) + '</div><div class="video-info"><div class="video-title">' + v.title.replace(/'/g, "\'") + '</div><div class="video-chapter">' + (v.chapter || '') + '</div></div><a href="https://youtu.be/' + v.id + '" target="_blank" class="video-link" onclick="event.stopPropagation()">▶ 看影片</a><div class="check-btn"></div></div>').join(''); updateStats(); }
+        function resetProgress() { if(confirm('確定重置？')) { completedVideos = []; saveProgress(); renderList(); } }
+        renderList();
+    </script>
+</body>
+</html>
