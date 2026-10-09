@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>喚醒心力 · 重構心智｜郭春林 - 學習中心</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.1em;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #00d9ff;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #888;
+        }
+        
+        .progress-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        
+        .video-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .video-item {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .video-item:hover {
+            background: rgba(255,255,255,0.12);
+            transform: translateX(5px);
+        }
+        
+        .video-item.completed {
+            border-color: #00ff88;
+            background: rgba(0,255,136,0.1);
+        }
+        
+        .video-item.completed .video-number {
+            background: #00ff88;
+            color: #1a1a2e;
+        }
+        
+        .video-number {
+            width: 35px;
+            height: 35px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .video-info {
+            flex: 1;
+        }
+        
+        .video-title {
+            font-size: 1em;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        
+        .video-chapter {
+            font-size: 0.8em;
+            color: #888;
+        }
+        
+        .video-link {
+            color: #00d9ff;
+            text-decoration: none;
+            padding: 8px 15px;
+            background: rgba(0,217,255,0.1);
+            border-radius: 20px;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .video-link:hover {
+            background: rgba(0,217,255,0.3);
+        }
+        
+        .check-btn {
+            width: 28px;
+            height: 28px;
+            border: 2px solid #555;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .check-btn:hover {
+            border-color: #00ff88;
+        }
+        
+        .video-item.completed .check-btn {
+            background: #00ff88;
+            border-color: #00ff88;
+        }
+        
+        .check-btn::after {
+            content: "✓";
+            color: #1a1a2e;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .video-item.completed .check-btn::after {
+            display: block;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .reset-btn {
+            background: rgba(255,100,100,0.2);
+            border: 1px solid #ff6464;
+            color: #ff6464;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .reset-btn:hover {
+            background: rgba(255,100,100,0.4);
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.6em; }
+            .stats { gap: 20px; }
+            .video-item { flex-wrap: wrap; }
+            .video-link { margin-top: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💫 喚醒心力 · 重構心智</h1>
+            <p class="subtitle">郭春林 | 25堂必修課</p>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalVideos">25</div>
+                    <div class="stat-label">總影片數</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="completedCount">0</div>
+                    <div class="stat-label">已完成</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="progressPercent">0%</div>
+                    <div class="stat-label">學習進度</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="progress-section">
+            <div class="progress-header">
+                <span>學習進度</span>
+                <span id="progressText">0 / 25</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="video-list" id="videoList">
+            <!-- 影片列表會由 JavaScript 生成 -->
+        </div>
+
+        <footer>
+            <p>點擊影片標題可跳轉到 YouTube 觀看</p>
+            <p>點擊圓圈可標記已完成</p>
+            <button class="reset-btn" onclick="resetProgress()">重置進度</button>
+        </footer>
+    </div>
+
+    <script>
+        const videos = [
+            { id: "IxZpkk2xO8I", title: "時代恐懼：我們為何焦慮？", chapter: "001.第一章-1 認知升級" },
+            { id: "qC9GOGUhYy4", title: "戰勝無力感", chapter: "002.第一章-2 戰勝無力" },
+            { id: "6NQLb2XNwEE", title: "時代洪流生存指南", chapter: "003.第一章-3 時代洪流" },
+            { id: "RkkeIsrT6y8", title: "認知自己：喚醒心力", chapter: "004.第二章-1 生命覺醒" },
+            { id: "E6qAHCjDEMg", title: "我是誰？三重自我", chapter: "005.第二章-2 認知自我" },
+            { id: "m-Mav12o4aI", title: "人心解碼", chapter: "006.第二章-3 人心解碼" },
+            { id: "JasuqyNYTho", title: "心力覺醒", chapter: "007.第二章-4 心力覺醒" },
+            { id: "dZWY_Zl6b14", title: "體力如何轉化為心力", chapter: "008.第三章-2 心志堅定" },
+            { id: "asgJwo0FzkU", title: "精力管理秘笈", chapter: "009.第三章-3 精力聚焦" },
+            { id: "3u7DfdcCIEY", title: "知識內化", chapter: "010.第三章-4 知識內化" },
+            { id: "WMq9iQdDMkA", title: "六步激發創造力", chapter: "011.第三章-6 創新激發" },
+            { id: "8QH8hOg0-K4", title: "能力展現", chapter: "012.第三章-5 能力展現" },
+            { id: "_U1cizh6CtQ", title: "如何自覺重構心智模式", chapter: "013.第四章-1 信息攝入模式" },
+            { id: "wFZMHiC6TGk", title: "思維模式升級", chapter: "014.第四章-2 思維模式升級" },
+            { id: "Zyhgy_5s4gY", title: "康德哲學：判斷模式", chapter: "015.第四章-3 判斷模式升級" },
+            { id: "o1Q84xMOBRs", title: "深度解析情感模式", chapter: "016.第四章-4 情感模式調適" },
+            { id: "fFCJtz-Hwhc", title: "角色旋轉", chapter: "017.第四章-5 角色模式旋轉" },
+            { id: "9p3BQ6YGdJc", title: "關係模式重構", chapter: "018.第四章-6 關係模式重構" },
+            { id: "hE-32gN1Nuw", title: "生命之光", chapter: "019.第五章-1 濾掉浮光" },
+            { id: "iyJ7YbdEk5E", title: "智慧的本質", chapter: "020.第五章-3 發出慧光" },
+            { id: "eYaA341HmQI", title: "生命透出靈光", chapter: "021.第五章-2 透出靈光" },
+            { id: "NVV3bI1LO0s", title: "精英戰略意識", chapter: "022.第六章-1 精英戰略意識" },
+            { id: "YtsrIvYzHqg", title: "思維重構：價值模式", chapter: "023.第六章-2 價值模式" },
+            { id: "nHnFhusHMjI", title: "精英思維 vs 普通思維", chapter: "024.第六章-3 創造未來" },
+            { id: "1uI1XMmPDns", title: "六步激發創造力", chapter: "025.第三章-1 體力鍛煉" }
+        ];
+
+        // 從 localStorage 讀取進度
+        let completedVideos = JSON.parse(localStorage.getItem('gcl-awakening-completed') || '[]');
+
+        function saveProgress() {
+            localStorage.setItem('gcl-awakening-completed', JSON.stringify(completedVideos));
+            updateStats();
+        }
+
+        function toggleComplete(index) {
+            const videoId = videos[index].id;
+            if (completedVideos.includes(videoId)) {
+                completedVideos = completedVideos.filter(id => id !== videoId);
+            } else {
+                completedVideos.push(videoId);
+            }
+            saveProgress();
+            renderList();
+        }
+
+        function updateStats() {
+            document.getElementById('completedCount').textContent = completedVideos.length;
+            document.getElementById('progressText').textContent = `${completedVideos.length} / ${videos.length}`;
+            const percent = Math.round((completedVideos.length / videos.length) * 100);
+            document.getElementById('progressPercent').textContent = `${percent}%`;
+            document.getElementById('progressFill').style.width = `${percent}%`;
+        }
+
+        function renderList() {
+            const list = document.getElementById('videoList');
+            list.innerHTML = videos.map((video, index) => `
+                <div class="video-item ${completedVideos.includes(video.id) ? 'completed' : ''}" onclick="toggleComplete(${index})">
+                    <div class="video-number">${index + 1}</div>
+                    <div class="video-info">
+                        <div class="video-title">${video.title}</div>
+                        <div class="video-chapter">${video.chapter}</div>
+                    </div>
+                    <a href="https://youtu.be/${video.id}" target="_blank" class="video-link" onclick="event.stopPropagation()">
+                        ▶ 看影片
+                    </a>
+                    <div class="check-btn"></div>
+                </div>
+            `).join('');
+            updateStats();
+        }
+
+        function resetProgress() {
+            if (confirm('確定要重置所有進度嗎？')) {
+                completedVideos = [];
+                saveProgress();
+                renderList();
+            }
+        }
+
+        // 初始化
+        renderList();
+    </script>
+</body>
+</html>
