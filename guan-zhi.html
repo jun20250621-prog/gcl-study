@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管子｜學習中心</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); min-height: 100vh; color: #fff; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        header { text-align: center; padding: 40px 20px; background: rgba(255,255,255,0.05); border-radius: 20px; margin-bottom: 30px; backdrop-filter: blur(10px); }
+        h1 { font-size: 2.2em; margin-bottom: 10px; background: linear-gradient(90deg, #ff6b6b, #feca57); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { font-size: 1.1em; color: #aaa; margin-bottom: 20px; }
+        .stats { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 20px; }
+        .stat-item { text-align: center; }
+        .stat-number { font-size: 2em; font-weight: bold; color: #ff6b6b; }
+        .stat-label { font-size: 0.9em; color: #888; }
+        .progress-section { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 20px; margin-bottom: 30px; }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .progress-bar { height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #ff6b6b, #feca57); border-radius: 5px; transition: width 0.3s ease; }
+        .video-list { display: grid; gap: 15px; }
+        .video-item { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px 20px; display: flex; align-items: center; gap: 15px; transition: all 0.3s ease; cursor: pointer; border: 2px solid transparent; }
+        .video-item:hover { background: rgba(255,255,255,0.12); transform: translateX(5px); }
+        .video-item.completed { border-color: #feca57; background: rgba(255,255,255,0.1); }
+        .video-item.completed .video-number { background: #feca57; color: #1a1a2e; }
+        .video-number { width: 35px; height: 35px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+        .video-info { flex: 1; }
+        .video-title { font-size: 1em; margin-bottom: 5px; color: #fff; }
+        .video-chapter { font-size: 0.8em; color: #888; }
+        .video-link { color: #ff6b6b; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.1); border-radius: 20px; font-size: 0.85em; transition: all 0.3s ease; white-space: nowrap; }
+        .video-link:hover { background: rgba(255,255,255,0.2); }
+        .check-btn { width: 28px; height: 28px; border: 2px solid #555; border-radius: 50%; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .check-btn:hover { border-color: #feca57; }
+        .video-item.completed .check-btn { background: #feca57; border-color: #feca57; }
+        .check-btn::after { content: "✓"; color: #1a1a2e; font-weight: bold; display: none; }
+        .video-item.completed .check-btn::after { display: block; }
+        footer { text-align: center; padding: 30px; color: #666; font-size: 0.9em; }
+        .reset-btn { background: rgba(255,100,100,0.2); border: 1px solid #ff6464; color: #ff6464; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9em; margin-top: 20px; }
+        @media (max-width: 600px) { h1 { font-size: 1.6em; } .stats { gap: 20px; } .video-item { flex-wrap: wrap; } .video-link { margin-top: 10px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>管子</h1>
+            <p class="subtitle">9部影片</p>
+            <div class="stats">
+                <div class="stat-item"><div class="stat-number" id="totalVideos">9</div><div class="stat-label">總影片數</div></div>
+                <div class="stat-item"><div class="stat-number" id="completedCount">0</div><div class="stat-label">已完成</div></div>
+                <div class="stat-item"><div class="stat-number" id="progressPercent">0%</div><div class="stat-label">學習進度</div></div>
+            </div>
+        </header>
+        <div class="progress-section">
+            <div class="progress-header"><span>學習進度</span><span id="progressText">0 / 9</span></div>
+            <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%"></div></div>
+        </div>
+        <div class="video-list" id="videoList"></div>
+        <footer>
+            <p>點擊圓圈可標記已完成</p>
+            <button class="reset-btn" onclick="resetProgress()">重置進度</button>
+        </footer>
+    </div>
+    <script>
+        const videos = [{"id": "ABRGc0jxo9w", "title": "【贈送指標】【重磅教學】 買進賣出只看顏色 形態學指定專用 | 藍色買 紫色賣 3步驟收割大行情 | MACD+RSI+布林 | 拒絕事後諸葛 形態學專用指標的完整SOP教學 只要3步驟 5分鐘學會", "chapter": ""}, {"id": "JTsIojFDU64", "title": "【形態學】買在起漲點:破解所有延續形態，只需兩條線搞定 | 中段整理形態的標準買點與領先買點", "chapter": ""}, {"id": "Nid-X6gqKLo", "title": "【形態學】【重磅教學】 一招看破 反轉形態還是延續 |  VCP領先佈局的秘技 | 5分鐘學會 中段整理形態3大買點 效果出乎意料的好", "chapter": ""}, {"id": "_cFXgmHkl0M", "title": "【價格行為】要賺大錢，一定要學會的技術 | 勝率84% | W底 M頭 | 雙重底 雙重頂 N字結構", "chapter": ""}, {"id": "nyRyHVIPxmw", "title": "【炒股上億的秘密】太神了！機構買的股他全偷跟到，靠這指標 把1萬滾出$42,000,000  日賺500萬美金 164000%報酬還打破世界紀錄 這秘密最近終於被公開", "chapter": ""}, {"id": "g4pAdekc6cE", "title": "【上班族必看】【18000%】股票： 33萬 ⮕ 6000萬，炒幣30萬⮕1.5億！ 音樂神童發現炒股的秘密，能把33萬快速滾到6000萬的方法限時大公開", "chapter": ""}, {"id": "hfalSn4oR-g", "title": "【價格行為】【QML】勝率最高的型態 專門破解各種型態學 | ICT技術 | 期貨 外匯 加密貨幣都適用", "chapter": ""}, {"id": "fHoDBXA0UFg", "title": "華爾街12年連勝無一敗績的最強逃頂 抄底策略 一學就會 | 靠這招，在崩盤中1夜暴賺300%！ |  期貨 外匯 加密貨幣都適用", "chapter": ""}, {"id": "OzV_l3Q4Fh8", "title": "【超簡單】買在波段發動點！電腦自動抓買點，讓你領先市場，買在行情發動前！ | 期貨 外匯 加密貨幣也超適用", "chapter": ""}];
+        const STORAGE_KEY = 'gcl----completed';
+        let completedVideos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        
+        function saveProgress() { localStorage.setItem(STORAGE_KEY, JSON.stringify(completedVideos)); updateStats(); }
+        function toggleComplete(index) { const id = videos[index].id; completedVideos.includes(id) ? completedVideos = completedVideos.filter(x => x !== id) : completedVideos.push(id); saveProgress(); renderList(); }
+        function updateStats() { document.getElementById('completedCount').textContent = completedVideos.length; document.getElementById('progressText').textContent = completedVideos.length + ' / ' + videos.length; const p = Math.round(completedVideos.length / videos.length * 100); document.getElementById('progressPercent').textContent = p + '%'; document.getElementById('progressFill').style.width = p + '%'; }
+        function renderList() { document.getElementById('videoList').innerHTML = videos.map((v, i) => '<div class="video-item ' + (completedVideos.includes(v.id) ? 'completed' : '') + '" onclick="toggleComplete(' + i + ')"><div class="video-number">' + (i+1) + '</div><div class="video-info"><div class="video-title">' + v.title.replace(/'/g, "\'") + '</div><div class="video-chapter">' + (v.chapter || '') + '</div></div><a href="https://youtu.be/' + v.id + '" target="_blank" class="video-link" onclick="event.stopPropagation()">▶ 看影片</a><div class="check-btn"></div></div>').join(''); updateStats(); }
+        function resetProgress() { if(confirm('確定重置？')) { completedVideos = []; saveProgress(); renderList(); } }
+        renderList();
+    </script>
+</body>
+</html>
