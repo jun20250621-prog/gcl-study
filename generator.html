@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YT 學習網頁生成器</title>
+    <title>YT 學習網頁生成器（支援筆記）</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -75,12 +75,7 @@
         }
         .color-option:hover { transform: scale(1.1); }
         .color-option.selected { border-color: #fff; }
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #00d9ff;
-            display: none;
-        }
+        .loading { text-align: center; padding: 20px; color: #00d9ff; display: none; }
         .loading.show { display: block; }
         .error {
             background: rgba(255,100,100,0.2);
@@ -92,22 +87,21 @@
             display: none;
         }
         .error.show { display: block; }
-        .help {
-            background: rgba(255,200,0,0.1);
-            border: 1px solid rgba(255,200,0,0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        .help h3 { color: #ffd700; font-size: 1em; margin-bottom: 10px; }
-        .help code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
         .video-count { color: #00ff88; font-weight: bold; }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        .checkbox-label input { width: auto; margin: 0; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🎬 YT 學習網頁生成器</h1>
-        <p class="subtitle">輸入播放清單網址，自動生成學習網頁</p>
+        <p class="subtitle">輸入播放清單網址，自動生成學習網頁（支援筆記功能）</p>
 
         <div class="card">
             <h2>🔗 從播放清單獲取</h2>
@@ -137,6 +131,11 @@
                 <div class="color-option" style="background: linear-gradient(135deg, #e84393, #fd79a8)" data-color="e84393,fd79a8"></div>
                 <div class="color-option" style="background: linear-gradient(135deg, #00cec9, #81ecec)" data-color="00cec9,81ecec"></div>
             </div>
+
+            <label class="checkbox-label">
+                <input type="checkbox" id="enableNotes" checked>
+                啟用筆記功能
+            </label>
         </div>
 
         <div class="card">
@@ -187,7 +186,6 @@
             hideError();
 
             try {
-                // 嘗試多個 Invidious 實例
                 const instances = [
                     'https://invidious.jingl.xyz',
                     'https://invidious.privacydev.net',
@@ -196,21 +194,14 @@
                 ];
 
                 let videos = null;
-                let lastError = null;
 
                 for (const instance of instances) {
                     try {
                         videos = await fetchFromInstance(instance, playlistId);
                         if (videos && videos.length > 0) break;
                     } catch (e) {
-                        lastError = e.message;
                         continue;
                     }
-                }
-
-                if (!videos || videos.length === 0) {
-                    // 如果 API 都失敗，使用備用方案 - curl 伺服器端
-                    videos = await fetchViaServer(playlistId);
                 }
 
                 if (!videos || videos.length === 0) {
@@ -219,12 +210,9 @@
                 }
 
                 fetchedVideos = videos;
-
-                // 自動填入
                 document.getElementById('videoList').value = videos.map(v => `${v.id}|${v.title}|${v.chapter || ''}`).join('\n');
                 document.getElementById('videoCount').textContent = videos.length;
 
-                // 嘗試從標題獲取課程名稱
                 if (!document.getElementById('courseName').value) {
                     const playlistTitle = videos[0]?.playlistTitle || '';
                     if (playlistTitle) {
@@ -254,13 +242,6 @@
             }));
         }
 
-        async function fetchViaServer(playlistId) {
-            // 備用方案：使用伺服器端代理
-            // 這需要後端支援，這裡顯示說明
-            showError('自動獲取暫時不可用，請手動輸入影片列表');
-            return [];
-        }
-
         function extractPlaylistId(url) {
             const match = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
             return match ? match[1] : null;
@@ -285,6 +266,7 @@
             const courseName = document.getElementById('courseName').value || '課程學習';
             const courseSubtitle = document.getElementById('courseSubtitle').value || '';
             const videoText = document.getElementById('videoList').value.trim();
+            const enableNotes = document.getElementById('enableNotes').checked;
 
             if (!videoText) {
                 alert('請輸入影片列表或從播放清單獲取');
@@ -315,6 +297,48 @@
             const [c1, c2] = selectedColor.split(',');
             const slug = courseName.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase().substring(0, 20);
 
+            // 筆記功能相關的 HTML/JS
+            const notesCSS = enableNotes ? `
+        .notes-panel { display: none; background: rgba(0,0,0,0.3); border-radius: 10px; padding: 15px; margin-top: 10px; }
+        .notes-panel.show { display: block; }
+        .notes-panel textarea { width: 100%; min-height: 150px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; color: #fff; font-size: 0.9em; resize: vertical; }
+        .notes-panel textarea::placeholder { color: #888; }
+        .notes-count { font-size: 0.8em; color: #888; }
+        .notes-btn { background: rgba(255,200,0,0.2); border: 1px solid #ffc800; color: #ffc800; padding: 5px 12px; border-radius: 15px; cursor: pointer; font-size: 0.85em; margin-left: 10px; }` : '';
+
+            const notesJS = enableNotes ? `
+        let videoNotes = JSON.parse(localStorage.getItem(STORAGE_KEY + '-notes') || '{}');
+
+        function toggleNotes(index) {{
+            const panel = document.getElementById('notes-' + index);
+            if (panel.style.display === 'block') {{
+                panel.style.display = 'none';
+            }} else {{
+                // 隱藏其他筆記面板
+                document.querySelectorAll('.notes-panel').forEach(p => p.style.display = 'none');
+                panel.style.display = 'block';
+            }}
+        }}
+
+        function saveNote(index) {{
+            const note = document.getElementById('note-' + index).value;
+            videoNotes[videos[index].id] = note;
+            localStorage.setItem(STORAGE_KEY + '-notes', JSON.stringify(videoNotes));
+            updateNotesCount();
+        }}
+
+        function updateNotesCount() {{
+            const count = Object.keys(videoNotes).filter(k => videoNotes[k] && videoNotes[k].trim()).length;
+            document.getElementById('notesCount').textContent = count;
+        }}
+
+        const notesBtnHtml = '<button class="notes-btn" onclick="toggleNotes(' + i + ')">📝 筆記</button>';
+        const notesPanelHtml = '<div class="notes-panel" id="notes-' + i + '" style="display:none"><textarea id="note-' + i + '" placeholder="在這裡記錄筆記...' + v.title + '">' + (videoNotes[v.id] || '') + '</textarea><button class="btn" style="margin-top:10px;padding:10px" onclick="saveNote(' + i + ')">💾 儲存筆記</button></div>';` : '';
+
+            const videoItemHTML = enableNotes ?
+                `'<div class="video-item ' + (completedVideos.includes(v.id) ? 'completed' : '') + '" onclick="toggleComplete(' + i + ')"><div class="video-number">' + (i+1) + '</div><div class="video-info"><div class="video-title">' + v.title + '</div><div class="video-chapter">' + v.chapter + '</div>' + notesPanelHtml + '</div><a href="https://youtu.be/' + v.id + '" target="_blank" class="video-link" onclick="event.stopPropagation()">▶ 看影片</a>' + notesBtnHtml + '<div class="check-btn"></div></div>'` :
+                `'<div class="video-item ' + (completedVideos.includes(v.id) ? 'completed' : '') + '" onclick="toggleComplete(' + i + ')"><div class="video-number">' + (i+1) + '</div><div class="video-info"><div class="video-title">' + v.title + '</div><div class="video-chapter">' + v.chapter + '</div></div><a href="https://youtu.be/' + v.id + '" target="_blank" class="video-link" onclick="event.stopPropagation()">▶ 看影片</a><div class="check-btn"></div></div>'`;
+
             const html = `<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -337,12 +361,12 @@
         .progress-bar { height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, #${c1}, #${c2}); border-radius: 5px; transition: width 0.3s ease; }
         .video-list { display: grid; gap: 15px; }
-        .video-item { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px 20px; display: flex; align-items: center; gap: 15px; transition: all 0.3s ease; cursor: pointer; border: 2px solid transparent; }
+        .video-item { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px 20px; display: flex; align-items: flex-start; gap: 15px; transition: all 0.3s ease; cursor: pointer; border: 2px solid transparent; flex-wrap: wrap; }
         .video-item:hover { background: rgba(255,255,255,0.12); transform: translateX(5px); }
         .video-item.completed { border-color: #${c2}; background: rgba(255,255,255,0.1); }
         .video-item.completed .video-number { background: #${c2}; color: #1a1a2e; }
         .video-number { width: 35px; height: 35px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
-        .video-info { flex: 1; }
+        .video-info { flex: 1; min-width: 200px; }
         .video-title { font-size: 1em; margin-bottom: 5px; color: #fff; }
         .video-chapter { font-size: 0.8em; color: #888; }
         .video-link { color: #${c1}; text-decoration: none; padding: 8px 15px; background: rgba(255,255,255,0.1); border-radius: 20px; font-size: 0.85em; transition: all 0.3s ease; white-space: nowrap; }
@@ -354,6 +378,8 @@
         .video-item.completed .check-btn::after { display: block; }
         footer { text-align: center; padding: 30px; color: #666; font-size: 0.9em; }
         .reset-btn { background: rgba(255,100,100,0.2); border: 1px solid #ff6464; color: #ff6464; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9em; margin-top: 20px; }
+        .export-btn { background: rgba(0,150,255,0.2); border: 1px solid #0096ff; color: #0096ff; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9em; margin-top: 20px; margin-left: 10px; }
+        ${notesCSS}
         @media (max-width: 600px) { h1 { font-size: 1.6em; } .stats { gap: 20px; } .video-item { flex-wrap: wrap; } .video-link { margin-top: 10px; } }
     </style>
 </head>
@@ -366,6 +392,7 @@
                 <div class="stat-item"><div class="stat-number" id="totalVideos">${videos.length}</div><div class="stat-label">總影片數</div></div>
                 <div class="stat-item"><div class="stat-number" id="completedCount">0</div><div class="stat-label">已完成</div></div>
                 <div class="stat-item"><div class="stat-number" id="progressPercent">0%</div><div class="stat-label">學習進度</div></div>
+                ${enableNotes ? '<div class="stat-item"><div class="stat-number" id="notesCount">0</div><div class="stat-label">筆記數</div></div>' : ''}
             </div>
         </header>
         <div class="progress-section">
@@ -374,20 +401,78 @@
         </div>
         <div class="video-list" id="videoList"></div>
         <footer>
-            <p>點擊圓圈可標記已完成</p>
+            <p>點擊圓圈可標記已完成 ${enableNotes ? '| 點擊筆記按鈕可寫筆記' : ''}</p>
             <button class="reset-btn" onclick="resetProgress()">重置進度</button>
+            ${enableNotes ? '<button class="export-btn" onclick="exportNotes()">📤 匯出筆記</button>' : ''}
         </footer>
     </div>
     <script>
         const videos = ${JSON.stringify(videos)};
         const STORAGE_KEY = 'gcl-${slug}-completed';
         let completedVideos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-        
+        ${enableNotes ? `let videoNotes = JSON.parse(localStorage.getItem(STORAGE_KEY + '-notes') || '{}');` : ''}
+
         function saveProgress() { localStorage.setItem(STORAGE_KEY, JSON.stringify(completedVideos)); updateStats(); }
+        
+        ${enableNotes ? `
+        function toggleNotes(index) {
+            const panel = document.getElementById('notes-' + index);
+            document.querySelectorAll('.notes-panel').forEach(p => p.style.display = 'none');
+            if (panel.style.display === 'block') {
+                panel.style.display = 'none';
+            } else {
+                panel.style.display = 'block';
+            }
+        }
+
+        function saveNote(index) {
+            const note = document.getElementById('note-' + index).value;
+            videoNotes[videos[index].id] = note;
+            localStorage.setItem(STORAGE_KEY + '-notes', JSON.stringify(videoNotes));
+            alert('筆記已儲存！');
+        }
+
+        function updateNotesCount() {
+            const count = Object.keys(videoNotes).filter(k => videoNotes[k] && videoNotes[k].trim()).length;
+            document.getElementById('notesCount').textContent = count;
+        }
+
+        function exportNotes() {
+            let text = '# ${courseName} 筆記\\n\\n';
+            videos.forEach((v, i) => {
+                const note = videoNotes[v.id] || '';
+                if (note.trim()) {
+                    text += '## ' + (i+1) + '. ' + v.title + '\\n';
+                    text += note + '\\n\\n';
+                }
+            });
+            
+            const blob = new Blob([text], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '${slug}-notes.md';
+            a.click();
+        }
+        ` : ''}
+
         function toggleComplete(index) { const id = videos[index].id; completedVideos.includes(id) ? completedVideos = completedVideos.filter(x => x !== id) : completedVideos.push(id); saveProgress(); renderList(); }
-        function updateStats() { document.getElementById('completedCount').textContent = completedVideos.length; document.getElementById('progressText').textContent = completedVideos.length + ' / ' + videos.length; const p = Math.round(completedVideos.length / videos.length * 100); document.getElementById('progressPercent').textContent = p + '%'; document.getElementById('progressFill').style.width = p + '%'; }
-        function renderList() { document.getElementById('videoList').innerHTML = videos.map((v, i) => '<div class="video-item ' + (completedVideos.includes(v.id) ? 'completed' : '') + '" onclick="toggleComplete(' + i + ')"><div class="video-number">' + (i+1) + '</div><div class="video-info"><div class="video-title">' + v.title + '</div><div class="video-chapter">' + v.chapter + '</div></div><a href="https://youtu.be/' + v.id + '" target="_blank" class="video-link" onclick="event.stopPropagation()">▶ 看影片</a><div class="check-btn"></div></div>').join(''); updateStats(); }
-        function resetProgress() { if(confirm('確定重置？')) { completedVideos = []; saveProgress(); renderList(); } }
+        function updateStats() { document.getElementById('completedCount').textContent = completedVideos.length; document.getElementById('progressText').textContent = completedVideos.length + ' / ' + videos.length; const p = Math.round(completedVideos.length / videos.length * 100); document.getElementById('progressPercent').textContent = p + '%'; document.getElementById('progressFill').style.width = p + '%'; ${enableNotes ? 'updateNotesCount();' : ''} }
+        
+        function renderList() { 
+            document.getElementById('videoList').innerHTML = videos.map((v, i) => {
+                ${enableNotes ? `
+                const notesPanel = '<div class="notes-panel" id="notes-' + i + '" style="display:none"><textarea id="note-' + i + '" placeholder="在這裡記錄筆記...">' + (videoNotes[v.id] || '').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</textarea><button class="btn" style="margin-top:10px;padding:10px;width:100%" onclick="saveNote(' + i + ')">💾 儲存筆記</button></div>';
+                const notesBtn = '<button class="notes-btn" style="background:rgba(255,200,0,0.2);border:1px solid #ffc800;color:#ffc800;padding:5px 12px;border-radius:15px;cursor:pointer;font-size:0.85em;margin-left:10px" onclick="event.stopPropagation();toggleNotes(' + i + ')">📝 筆記</button>';
+                return '<div class="video-item ' + (completedVideos.includes(v.id) ? 'completed' : '') + '" onclick="toggleComplete(' + i + ')"><div class="video-number">' + (i+1) + '</div><div class="video-info"><div class="video-title">' + v.title.replace(/'/g, "\\'") + '</div><div class="video-chapter">' + (v.chapter || '') + '</div>' + notesPanel + '</div><a href="https://youtu.be/' + v.id + '" target="_blank" class="video-link" onclick="event.stopPropagation()">▶ 看影片</a>' + notesBtn + '<div class="check-btn"></div></div>';
+                ` : `
+                return '<div class="video-item ' + (completedVideos.includes(v.id) ? 'completed' : '') + '" onclick="toggleComplete(' + i + ')"><div class="video-number">' + (i+1) + '</div><div class="video-info"><div class="video-title">' + v.title.replace(/'/g, "\\'") + '</div><div class="video-chapter">' + (v.chapter || '') + '</div></div><a href="https://youtu.be/' + v.id + '" target="_blank" class="video-link" onclick="event.stopPropagation()">▶ 看影片</a><div class="check-btn"></div></div>';
+                `}
+            }).join(''); 
+            updateStats(); 
+        }
+        
+        function resetProgress() { if(confirm('確定重置？這也會刪除所有筆記')) { completedVideos = []; ${enableNotes ? "videoNotes = {}; localStorage.setItem(STORAGE_KEY + '-notes', '{}');" : ''} saveProgress(); renderList(); } }
         renderList();
     <\/script>
 </body>
@@ -406,7 +491,7 @@
 
         function downloadHTML() {
             const html = document.getElementById('outputHTML').value;
-            const courseName = document.getElementById('courseName').value || 'study';
+            const courseName = document.getElementById('courseName').value || ' study';
             const filename = courseName.replace(/[^a-zA-Z0-9]/g, '-') + '.html';
 
             const blob = new Blob([html], { type: 'text/html' });
