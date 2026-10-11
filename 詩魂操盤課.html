@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>詩魂操盤課 - 學習網頁</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Microsoft JhengHei", "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #e94560, #f5af19);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+        
+        .video-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        @media (min-width: 768px) {
+            .video-container {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+        
+        .player-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+        
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .playlist-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .playlist-section h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #e94560;
+        }
+        
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        
+        .playlist-item:hover {
+            background: rgba(233, 69, 96, 0.1);
+            border-color: #e94560;
+            transform: translateX(5px);
+        }
+        
+        .playlist-item.active {
+            background: rgba(233, 69, 96, 0.2);
+            border-color: #e94560;
+        }
+        
+        .playlist-item-number {
+            width: 30px;
+            height: 30px;
+            background: #e94560;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .playlist-item-title {
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        .progress-section {
+            margin-top: 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 20px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e94560, #f5af19);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .notes-section {
+            margin-top: 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 20px;
+        }
+        
+        .notes-section textarea {
+            width: 100%;
+            min-height: 200px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 15px;
+            color: #fff;
+            font-size: 1rem;
+            resize: vertical;
+        }
+        
+        .notes-section textarea:focus {
+            outline: none;
+            border-color: #e94560;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #666;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #e94560;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📈 詩魂操盤課</h1>
+            <p class="subtitle">打造你的專屬學習平台</p>
+        </header>
+        
+        <div class="video-container">
+            <div class="player-section">
+                <div class="video-wrapper">
+                    <iframe 
+                        src="https://www.youtube.com/embed/videoseries?list=PLLy2drsLe2jFzhdo9qBWD5Bx54p4BtLNQ"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                
+                <div class="progress-section">
+                    <h3>學習進度</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <p id="progressText" style="margin-top: 10px; color: #a0a0a0;">0 / 0 已完成</p>
+                </div>
+            </div>
+            
+            <div class="playlist-section">
+                <h2>📋 課程列表</h2>
+                <div id="playlistItems">
+                    <!-- 預設列表 (實際列表需從 YouTube 獲取) -->
+                    <div class="playlist-item" data-index="0">
+                        <span class="playlist-item-number">1</span>
+                        <span class="playlist-item-title">詩魂操盤課 - 第1課</span>
+                    </div>
+                    <div class="playlist-item" data-index="1">
+                        <span class="playlist-item-number">2</span>
+                        <span class="playlist-item-title">詩魂操盤課 - 第2課</span>
+                    </div>
+                    <div class="playlist-item" data-index="2">
+                        <span class="playlist-item-number">3</span>
+                        <span class="playlist-item-title">詩魂操盤課 - 第3課</span>
+                    </div>
+                    <div class="playlist-item" data-index="3">
+                        <span class="playlist-item-number">4</span>
+                        <span class="playlist-item-title">詩魂操盤課 - 第4課</span>
+                    </div>
+                    <div class="playlist-item" data-index="4">
+                        <span class="playlist-item-number">5</span>
+                        <span class="playlist-item-title">詩魂操盤課 - 第5課</span>
+                    </div>
+                </div>
+                <p style="margin-top: 20px; color: #666; font-size: 0.9rem;">
+                    💡 點擊列表可跳轉至指定影片
+                </p>
+            </div>
+        </div>
+        
+        <div class="notes-section">
+            <h3>📝 學習筆記</h3>
+            <textarea id="notes" placeholder="在這裡記錄你的學習筆記..."></textarea>
+        </div>
+        
+        <footer>
+            <p>🎯 持續學習，穩健成長</p>
+        </footer>
+    </div>
+    
+    <script>
+        // 儲存筆記到 localStorage
+        const notes = document.getElementById('notes');
+        notes.value = localStorage.getItem('stockNotes') || '';
+        
+        notes.addEventListener('input', () => {
+            localStorage.setItem('stockNotes', notes.value);
+        });
+        
+        // 標記完成
+        const playlistItems = document.querySelectorAll('.playlist-item');
+        const completed = JSON.parse(localStorage.getItem('completedVideos') || '[]');
+        
+        function updateProgress() {
+            const total = playlistItems.length;
+            const done = completed.length;
+            const percent = total > 0 ? (done / total) * 100 : 0;
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = `${done} / ${total} 已完成`;
+        }
+        
+        playlistItems.forEach((item, index) => {
+            if (completed.includes(index)) {
+                item.classList.add('active');
+            }
+            
+            item.addEventListener('click', () => {
+                // 切換完成狀態
+                if (completed.includes(index)) {
+                    completed.splice(completed.indexOf(index), 1);
+                    item.classList.remove('active');
+                } else {
+                    completed.push(index);
+                    item.classList.add('active');
+                }
+                localStorage.setItem('completedVideos', JSON.stringify(completed));
+                updateProgress();
+            });
+        });
+        
+        updateProgress();
+    </script>
+</body>
+</html>
