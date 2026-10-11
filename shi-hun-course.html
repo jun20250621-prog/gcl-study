@@ -7,38 +7,33 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); min-height: 100vh; color: #fff; line-height: 1.6; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
         header { text-align: center; padding: 30px 20px; background: rgba(255,255,255,0.05); border-radius: 20px; margin-bottom: 30px; }
         h1 { font-size: 2em; margin-bottom: 10px; color: #feca57; }
         .subtitle { font-size: 1em; color: #aaa; margin-bottom: 15px; }
-        
-        .video-section { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; margin-bottom: 30px; }
-        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 10px; }
-        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        
         .stats { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-top: 15px; }
         .stat-item { text-align: center; }
         .stat-number { font-size: 1.5em; font-weight: bold; color: #feca57; }
         .stat-label { font-size: 0.8em; color: #888; }
-        
         .progress-section { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; margin-bottom: 30px; }
         .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.9em; }
         .progress-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
         .progress-fill { height: 100%; background: #feca57; border-radius: 4px; transition: width 0.3s ease; }
         
-        .video-item { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; margin-bottom: 12px; border: 2px solid transparent; transition: all 0.3s ease; cursor: pointer; }
+        .video-item { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; margin-bottom: 12px; border: 2px solid transparent; transition: all 0.3s ease; }
         .video-item:hover { background: rgba(255,255,255,0.12); }
-        .video-item.active { border-color: #feca57; background: rgba(254,202,87,0.1); }
+        .video-item.completed { border-color: #feca57; background: rgba(254,202,87,0.1); }
         
-        .video-header { display: flex; align-items: center; gap: 12px; }
+        .video-header { display: flex; align-items: center; gap: 12px; cursor: pointer; }
         .video-number { width: 32px; height: 32px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
-        .video-item.active .video-number { background: #feca57; color: #1a1a2e; }
-        .video-title { flex: 1; font-size: 0.95em; }
-        .video-link { color: #feca57; text-decoration: none; padding: 6px 12px; background: rgba(254,202,87,0.2); border-radius: 15px; font-size: 0.8em; margin-right: 8px; }
-        .check-btn { width: 26px; height: 26px; border: 2px solid #555; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
-        .video-item.active .check-btn { background: #feca57; border-color: #feca57; }
-        .video-item.active .check-btn::after { content: "✓"; color: #1a1a2e; font-weight: bold; font-size: 0.8em; }
+        .video-item.completed .video-number { background: #feca57; color: #1a1a2e; }
+        .video-title { flex: 1; font-size: 0.95em; cursor: pointer; }
+        .video-actions { display: flex; gap: 8px; align-items: center; }
+        .video-link { color: #feca57; text-decoration: none; padding: 6px 12px; background: rgba(254,202,87,0.2); border-radius: 15px; font-size: 0.8em; }
+        .notes-btn { background: rgba(255,200,0,0.2); border: 1px solid #ffc800; color: #ffc800; padding: 6px 12px; border-radius: 15px; cursor: pointer; font-size: 0.8em; }
+        .check-btn { width: 26px; height: 26px; border: 2px solid #555; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .video-item.completed .check-btn { background: #feca57; border-color: #feca57; }
+        .video-item.completed .check-btn::after { content: "✓"; color: #1a1a2e; font-weight: bold; font-size: 0.8em; }
         
         .notes-panel { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); }
         .notes-panel textarea { 
@@ -46,13 +41,26 @@
             background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); 
             border-radius: 8px; padding: 10px; color: #fff; font-size: 0.9em; 
             resize: vertical; font-family: inherit; 
+            cursor: text !important;
         }
         .notes-panel textarea:focus { outline: 2px solid #feca57; }
-        .notes-panel .save-btn { background: #feca57; border: none; padding: 8px 16px; border-radius: 8px; color: #1a1a2e; font-weight: bold; cursor: pointer; margin-top: 8px; }
+        .notes-panel .save-btn { background: #feca57; border: none; padding: 8px 16px; border-radius: 8px; color: #1a1a2e; font-weight: bold; cursor: pointer; margin-top: 8px; margin-right: 8px; }
+        
+        .gist-btn { background: #24292e; border: 1px solid #444; color: #fff; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-top: 8px; }
         
         footer { text-align: center; padding: 20px; color: #666; font-size: 0.9em; }
         .reset-btn { background: rgba(255,100,100,0.2); border: 1px solid #ff6464; color: #ff6464; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9em; }
         .export-btn { background: rgba(0,150,255,0.2); border: 1px solid #0096ff; color: #0096ff; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 0.9em; margin-left: 10px; }
+        
+        .gist-section { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; margin-bottom: 30px; text-align: left; }
+        .gist-section h3 { color: #feca57; margin-bottom: 15px; }
+        .gist-section input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #333; background: rgba(0,0,0,0.3); color: #fff; margin-bottom: 10px; font-size: 0.9em; }
+        .gist-section .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+        .gist-save-btn { background: #2ea44f; border: none; padding: 10px 20px; border-radius: 8px; color: #fff; cursor: pointer; }
+        .gist-load-btn { background: #0366d6; border: none; padding: 10px 20px; border-radius: 8px; color: #fff; cursor: pointer; }
+        .status-msg { margin-top: 10px; font-size: 0.9em; }
+        .status-msg.success { color: #4ade80; }
+        .status-msg.error { color: #f87171; }
     </style>
 </head>
 <body>
@@ -68,38 +76,44 @@
             </div>
         </header>
         
-        <div class="video-section">
-            <div class="video-wrapper">
-                <iframe src="https://www.youtube.com/embed/videoseries?list=PLLy2drsLe2jFzhdo9qBWD5Bx54p4BtLNQ" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div class="gist-section">
+            <h3>☁️ GitHub Gist 同步</h3>
+            <input type="password" id="gistToken" placeholder="輸入 GitHub Token（建立於 github.com/settings/tokens）" />
+            <div class="btn-group">
+                <button class="gist-save-btn" onclick="saveToGist()">💾 儲存到 Gist</button>
+                <button class="gist-load-btn" onclick="loadFromGist()">📥 從 Gist 載入</button>
             </div>
+            <div id="gistStatus" class="status-msg"></div>
         </div>
         
         <div class="progress-section">
             <div class="progress-header"><span>學習進度</span><span id="progressText">0 / 5</span></div>
             <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 0%"></div></div>
         </div>
-        
         <div id="videoList"></div>
-        
         <footer>
-            <p>點擊項目標記完成 | 點擊影片標題可跳轉</p>
+            <p>點擊圓圈標記完成 | 點擊筆記按鈕寫筆記</p>
             <button class="reset-btn" onclick="resetProgress()">重置進度</button>
             <button class="export-btn" onclick="exportNotes()">📤 匯出筆記</button>
         </footer>
     </div>
-
     <script>
     const videos = [
         {"id": "hrrQaJjl8xc", "title": "【抓反轉】MACD指標背離的真相與進場方法一次講透"},
-        {"id": "CyUyxMPfgYo", "title": "停損後又漲回來？用華爾街命名法則，分別該割還是該等"},
+        {"id": "CyUyxMPfgYo", "title": "停損後又漲回來？用華爾街命名法則，分別該割還是等は"},
         {"id": "SYGFEtI7BOI", "title": "【詩魂操盤課】用對假突破反而賺更多！不要再等突破才追高"},
-        {"id": "f70KQ0qvLZ8", "title": "【詩魂操盤課】最強指標MACD操盤法：買賣點怎麼抓最準？方向、動能、進場場完全教學"},
+        {"id": "f70KQ0qvLZ8", "title": "【詩魂操盤課】最強指標MACD操盤法：買賣點怎麼抓最準？"},
         {"id": "iGY3HEfo7CY", "title": "【詩魂操盤課】MACD看方向、KD看跌幅！順勢拉回買點完全教學"}
     ];
     
-    const STORAGE_KEY = 'gcl-shi-hun-v3';
+    const STORAGE_KEY = 'gcl-shi-hun-v4';
+    const GIST_KEY = 'shi-hun-notes-gist';
     let completed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
     let notes = JSON.parse(localStorage.getItem(STORAGE_KEY + '-notes') || '{}');
+    let currentGistId = localStorage.getItem(GIST_KEY) || null;
+
+    // 初始化時自動填入 Token
+    document.getElementById('gistToken').value = localStorage.getItem('gist-token') || '';
 
     function save() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(completed));
@@ -156,16 +170,10 @@
         render();
     }
 
-    function playVideo(idx) {
-        const v = videos[idx];
-        window.open('https://youtu.be/' + v.id, '_blank');
-    }
-
     function updateStats() {
-        document.getElementById('totalVideos').textContent = videos.length;
         document.getElementById('completedCount').textContent = completed.length;
         document.getElementById('progressText').textContent = completed.length + ' / ' + videos.length;
-        const p = videos.length ? Math.round(completed.length / videos.length * 100) : 0;
+        const p = Math.round(completed.length / videos.length * 100);
         document.getElementById('progressPercent').textContent = p + '%';
         document.getElementById('progressFill').style.width = p + '%';
         updateNotesCount();
@@ -176,13 +184,15 @@
         list.innerHTML = videos.map((v, i) => {
             const isDone = completed.includes(v.id);
             const noteVal = notes[v.id] || '';
-            return '<div class="video-item ' + (isDone ? 'active' : '') + '">' +
+            return '<div class="video-item ' + (isDone ? 'completed' : '') + '">' +
                 '<div class="video-header" onclick="toggleComplete(' + i + ')">' +
                     '<div class="video-number">' + (i+1) + '</div>' +
-                    '<div class="video-title" onclick="playVideo(' + i + '); event.stopPropagation();">' + v.title + '</div>' +
-                    '<a href="https://youtu.be/' + v.id + '" target="_blank" class="video-link" onclick="event.stopPropagation();">▶</a>' +
-                    '<button class="notes-btn" onclick="toggleNotes(' + i + ', event)" style="background:rgba(255,200,0,0.2);border:1px solid #ffc800;color:#ffc800;padding:6px 12px;border-radius:15px;cursor:pointer;font-size:0.8em;margin-right:8px;">📝</button>' +
-                    '<div class="check-btn" onclick="toggleComplete(' + i + ')"></div>' +
+                    '<div class="video-title">' + v.title + '</div>' +
+                    '<div class="video-actions">' +
+                        '<a href="https://youtu.be/' + v.id + '" target="_blank" class="video-link">▶</a>' +
+                        '<button class="notes-btn" onclick="toggleNotes(' + i + ', event)">📝</button>' +
+                        '<div class="check-btn" onclick="toggleComplete(' + i + ')"></div>' +
+                    '</div>' +
                 '</div>' +
                 '<div class="notes-panel" id="notes-' + i + '" style="display:none">' +
                     '<textarea id="note-' + i + '" placeholder="在這裡記錄筆記...">' + noteVal + '</textarea>' +
@@ -199,6 +209,111 @@
             notes = {};
             save();
             render();
+        }
+    }
+
+    // ============ Gist 功能 ============
+    function showStatus(msg, isError = false) {
+        const el = document.getElementById('gistStatus');
+        el.textContent = msg;
+        el.className = 'status-msg ' + (isError ? 'error' : 'success');
+        setTimeout(() => el.textContent = '', 5000);
+    }
+
+    async function saveToGist() {
+        const token = document.getElementById('gistToken').value.trim();
+        if (!token) {
+            showStatus('請先輸入 GitHub Token', true);
+            return;
+        }
+        
+        // 保存 Token 到 localStorage
+        localStorage.setItem('gist-token', token);
+        
+        const data = {
+            completed: completed,
+            notes: notes,
+            updated: new Date().toISOString()
+        };
+        
+        const content = JSON.stringify(data, null, 2);
+        const filename = 'shi-hun-stock-notes.json';
+        
+        try {
+            let url = 'https://api.github.com/gists';
+            let method = 'POST';
+            let body = JSON.stringify({
+                description: '詩魂操盤課學習筆記',
+                public: false,
+                files: {
+                    [filename]: { content: content }
+                }
+            });
+            
+            // 如果已有 Gist ID，則更新
+            if (currentGistId) {
+                url = 'https://api.github.com/gists/' + currentGistId;
+                method = 'PATCH';
+            }
+            
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                body: body
+            });
+            
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.message || '儲存失敗');
+            }
+            
+            const result = await response.json();
+            currentGistId = result.id;
+            localStorage.setItem(GIST_KEY, currentGistId);
+            showStatus('✅ 已儲存到 Gist！');
+        } catch (err) {
+            showStatus('❌ 儲存失敗: ' + err.message, true);
+        }
+    }
+
+    async function loadFromGist() {
+        const token = document.getElementById('gistToken').value.trim();
+        if (!token) {
+            showStatus('請先輸入 GitHub Token', true);
+            return;
+        }
+        
+        if (!currentGistId) {
+            showStatus('目前沒有儲存的 Gist，請先儲存', true);
+            return;
+        }
+        
+        try {
+            const response = await fetch('https://api.github.com/gists/' + currentGistId, {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('載入失敗');
+            }
+            
+            const result = await response.json();
+            const filename = Object.keys(result.files)[0];
+            const content = JSON.parse(result.files[filename].content);
+            
+            if (content.completed) completed = content.completed;
+            if (content.notes) notes = content.notes;
+            
+            save();
+            render();
+            showStatus('✅ 已從 Gist 載入！');
+        } catch (err) {
+            showStatus('❌ 載入失敗: ' + err.message, true);
         }
     }
 
